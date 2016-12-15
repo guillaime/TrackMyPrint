@@ -161,7 +161,7 @@
         app:layout_constraintVertical_bias="0.060000002" />
 
     <ImageButton
-        app:srcCompat="@drawable/View_on_map"
+        app:srcCompat="@drawable/view_on_map"
         android:id="@+id/viewInlistBtn"
         android:minHeight="0dp"
         android:minWidth="0dp"
@@ -183,7 +183,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
-        android:background="@drawable/shipBtn"
+        android:background="@drawable/shipbtn"
         android:textColor="@android:color/background_light" />
 
 </android.support.constraint.ConstraintLayout>
