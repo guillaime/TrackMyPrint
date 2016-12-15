@@ -1,7 +1,11 @@
 package com.example.tmp.trackmyprint;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -25,6 +29,15 @@ public class MainActivity extends AppCompatActivity {
         production_proccess_list_adapter a = new production_proccess_list_adapter(this, names);
         ListView lv = (ListView) findViewById(R.id.production_proccess);
         lv.setAdapter(a);
+
+        ImageView checkIn = (ImageView) findViewById(R.id.check_in_status);
+        checkIn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, nfcActivity.class);
+                startActivity(intent);
+            }
+        });
 
     }
 }
