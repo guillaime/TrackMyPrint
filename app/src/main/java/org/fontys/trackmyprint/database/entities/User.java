@@ -12,8 +12,40 @@ import java.util.concurrent.locks.ReentrantLock;
 /**
  * Created by guido on 15-Dec-16.
  */
-public final class User extends Observable implements Observer
+public final class User extends Entity implements Observer
 {
+	public enum ChangeType
+	{
+		NONE(-1),
+		ORDER_ADDED(0),
+		ORDER_REMOVED(1);
+
+		private final int id;
+
+		ChangeType(int id)
+		{
+			this.id = id;
+		}
+
+		public static ChangeType findById(int id)
+		{
+			for(ChangeType changeType : ChangeType.values())
+			{
+				if(changeType.id == id)
+				{
+					return changeType;
+				}
+			}
+
+			return NONE;
+		}
+
+		public int getId()
+		{
+			return this.id;
+		}
+	}
+
 	private final String userId;
 	private final Map<String, Order> orders;
 	private final ReentrantLock lock;
@@ -23,7 +55,9 @@ public final class User extends Observable implements Observer
 			throws
 			IllegalArgumentException
 	{
-		Throw.IfNull(IllegalArgumentException.class, userId, "userId");
+		super(EntityType.USER);
+
+		Throw.ifNull(IllegalArgumentException.class, userId, "userId");
 
 		this.userId = userId;
 		this.orders = new HashMap<>();
@@ -73,7 +107,7 @@ public final class User extends Observable implements Observer
 		this.lock.lock();
 		try
 		{
-			notifyObservers();
+			notifyObservers(arg);
 		}
 		finally
 		{
@@ -85,7 +119,7 @@ public final class User extends Observable implements Observer
 			throws
 			IllegalArgumentException
 	{
-		Throw.IfNull(IllegalArgumentException.class, order, "order");
+		Throw.ifNull(IllegalArgumentException.class, order, "order");
 
 		this.lock.lock();
 		try
@@ -98,7 +132,7 @@ public final class User extends Observable implements Observer
 			this.orders.put(order.getOrderId(), order);
 			order.addObserver(this);
 
-			notifyObservers();
+			notifyObservers(new EntityChanged(this, ChangeType.ORDER_ADDED.getId(), order));
 
 			return true;
 		}
@@ -112,7 +146,7 @@ public final class User extends Observable implements Observer
 			throws
 			IllegalArgumentException
 	{
-		Throw.IfNull(IllegalArgumentException.class, order, "order");
+		Throw.ifNull(IllegalArgumentException.class, order, "order");
 
 		this.lock.lock();
 		try
@@ -125,7 +159,7 @@ public final class User extends Observable implements Observer
 
 			removedOrder.deleteObserver(this);
 
-			notifyObservers();
+			notifyObservers(new EntityChanged(this, ChangeType.ORDER_REMOVED.getId(), removedOrder));
 
 			return true;
 		}
@@ -139,7 +173,7 @@ public final class User extends Observable implements Observer
 			throws
 			IllegalArgumentException
 	{
-		Throw.IfNull(IllegalArgumentException.class, orderId, "orderId");
+		Throw.ifNull(IllegalArgumentException.class, orderId, "orderId");
 
 		this.lock.lock();
 		try
@@ -156,7 +190,7 @@ public final class User extends Observable implements Observer
 			throws
 			IllegalArgumentException
 	{
-		Throw.IfNull(IllegalArgumentException.class, order, "order");
+		Throw.ifNull(IllegalArgumentException.class, order, "order");
 
 		this.lock.lock();
 		try

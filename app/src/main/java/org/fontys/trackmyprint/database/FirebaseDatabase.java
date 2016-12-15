@@ -6,31 +6,26 @@ import org.fontys.trackmyprint.database.entities.Phase;
 import org.fontys.trackmyprint.database.entities.Product;
 import org.fontys.trackmyprint.database.entities.ProductPhase;
 import org.fontys.trackmyprint.database.entities.User;
+import org.fontys.trackmyprint.utils.Throw;
 
 import java.util.Calendar;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Created by guido on 15-Dec-16.
  */
-public final class Database implements DatabaseImpl
+public final class FirebaseDatabase extends AbstractDatabaseImpl
 {
-	private static final ReentrantLock INSTANCE_LOCK;
-	private static Database INSTANCE;
+	private final Object lock;
+	private boolean initialized;
+	private boolean deInitialized;
 
-	static
+	public FirebaseDatabase()
 	{
-		INSTANCE_LOCK = new ReentrantLock();
-		INSTANCE = null;
-	}
-
-	private final DatabaseImpl databaseImpl;
-
-	private Database()
-	{
-		this.databaseImpl = new FirebaseDatabase();
+		this.lock = new Object();
+		this.initialized = false;
+		this.deInitialized = false;
 	}
 
 	@Override
@@ -38,13 +33,31 @@ public final class Database implements DatabaseImpl
 			throws
 			IllegalStateException
 	{
-		this.databaseImpl.initialize();
+		synchronized(this.lock)
+		{
+			Throw.when(IllegalStateException.class, this.initialized, "Database is already initialized");
+			Throw.when(IllegalStateException.class, this.deInitialized, "Database is de-initialized");
+
+			// TODO: initialize routine
+
+			this.initialized = true;
+		}
 	}
 
 	@Override
 	public void deInitialize()
 	{
-		this.databaseImpl.deInitialize();
+		synchronized(this.lock)
+		{
+			if(!this.initialized || this.deInitialized)
+			{
+				return;
+			}
+
+			// TODO: de-initialize routine
+
+			this.deInitialized = true;
+		}
 	}
 
 	@Override
@@ -53,7 +66,7 @@ public final class Database implements DatabaseImpl
 			IllegalArgumentException,
 			DatabaseException
 	{
-		return this.databaseImpl.createEmployee(phase, name);
+		return null;
 	}
 
 	@Override
@@ -62,7 +75,7 @@ public final class Database implements DatabaseImpl
 			IllegalArgumentException,
 			DatabaseException
 	{
-		return this.databaseImpl.createEmployee(name);
+		return null;
 	}
 
 	@Override
@@ -72,7 +85,7 @@ public final class Database implements DatabaseImpl
 			IllegalArgumentException,
 			DatabaseException
 	{
-		return this.databaseImpl.createOrder(user, orderStatus, orderDate, products);
+		return null;
 	}
 
 	@Override
@@ -81,7 +94,7 @@ public final class Database implements DatabaseImpl
 			IllegalArgumentException,
 			DatabaseException
 	{
-		return this.databaseImpl.createOrder(user, orderStatus, orderDate);
+		return null;
 	}
 
 	@Override
@@ -90,7 +103,7 @@ public final class Database implements DatabaseImpl
 			IllegalArgumentException,
 			DatabaseException
 	{
-		return this.databaseImpl.createOrder(user, orderDate, products);
+		return null;
 	}
 
 	@Override
@@ -99,7 +112,7 @@ public final class Database implements DatabaseImpl
 			IllegalArgumentException,
 			DatabaseException
 	{
-		return this.databaseImpl.createOrder(user, orderDate);
+		return null;
 	}
 
 	@Override
@@ -108,7 +121,7 @@ public final class Database implements DatabaseImpl
 			IllegalArgumentException,
 			DatabaseException
 	{
-		return this.databaseImpl.createPhase(name);
+		return null;
 	}
 
 	@Override
@@ -118,7 +131,7 @@ public final class Database implements DatabaseImpl
 			IllegalArgumentException,
 			DatabaseException
 	{
-		return this.databaseImpl.createProduct(name, image, description, amount, order, productPhases);
+		return null;
 	}
 
 	@Override
@@ -128,7 +141,7 @@ public final class Database implements DatabaseImpl
 			IllegalArgumentException,
 			DatabaseException
 	{
-		return this.databaseImpl.createProduct(name, image, description, amount, order);
+		return null;
 	}
 
 	@Override
@@ -139,7 +152,7 @@ public final class Database implements DatabaseImpl
 			IllegalArgumentException,
 			DatabaseException
 	{
-		return this.databaseImpl.createProductPhase(startDate, endDate, productPhaseStatus, employee, phase);
+		return null;
 	}
 
 	@Override
@@ -148,7 +161,7 @@ public final class Database implements DatabaseImpl
 			IllegalArgumentException,
 			DatabaseException
 	{
-		return this.databaseImpl.createProductPhase(employee, phase);
+		return null;
 	}
 
 	@Override
@@ -157,7 +170,7 @@ public final class Database implements DatabaseImpl
 			IllegalArgumentException,
 			DatabaseException
 	{
-		return this.databaseImpl.createUser(orders);
+		return null;
 	}
 
 	@Override
@@ -166,7 +179,7 @@ public final class Database implements DatabaseImpl
 			IllegalArgumentException,
 			DatabaseException
 	{
-		return this.databaseImpl.createUser();
+		return null;
 	}
 
 	@Override
@@ -175,7 +188,7 @@ public final class Database implements DatabaseImpl
 			IllegalArgumentException,
 			DatabaseException
 	{
-		this.databaseImpl.remove(employee);
+
 	}
 
 	@Override
@@ -184,7 +197,7 @@ public final class Database implements DatabaseImpl
 			IllegalArgumentException,
 			DatabaseException
 	{
-		this.databaseImpl.remove(order);
+
 	}
 
 	@Override
@@ -193,7 +206,7 @@ public final class Database implements DatabaseImpl
 			IllegalArgumentException,
 			DatabaseException
 	{
-		this.databaseImpl.remove(phase);
+
 	}
 
 	@Override
@@ -202,7 +215,7 @@ public final class Database implements DatabaseImpl
 			IllegalArgumentException,
 			DatabaseException
 	{
-		this.databaseImpl.remove(product);
+
 	}
 
 	@Override
@@ -211,7 +224,7 @@ public final class Database implements DatabaseImpl
 			IllegalArgumentException,
 			DatabaseException
 	{
-		this.databaseImpl.remove(productPhase);
+
 	}
 
 	@Override
@@ -220,76 +233,90 @@ public final class Database implements DatabaseImpl
 			IllegalArgumentException,
 			DatabaseException
 	{
-		this.databaseImpl.remove(user);
+
 	}
 
 	@Override
 	public Set<Phase> getPhases()
 	{
-		return this.databaseImpl.getPhases();
+		return null;
 	}
 
 	@Override
 	public Set<Employee> getEmployees()
 	{
-		return this.databaseImpl.getEmployees();
+		return null;
 	}
 
 	@Override
 	public Set<User> getUsers()
 	{
-		return this.databaseImpl.getUsers();
+		return null;
 	}
 
 	@Override
 	public Set<Order> getOrders()
 	{
-		return this.databaseImpl.getOrders();
+		return null;
 	}
 
-	public static void initializeInstance()
-			throws
-			IllegalStateException
+	@Override
+	protected void handleEmployeePhaseChanged(Employee employee)
 	{
-		INSTANCE_LOCK.lock();
-		try
-		{
-			getInstance().initialize();
-		}
-		finally
-		{
-			INSTANCE_LOCK.unlock();
-		}
+
 	}
 
-	public static void deInitializeInstance()
+	@Override
+	protected void handleOrderProductAdded(Order order, Product product)
 	{
-		INSTANCE_LOCK.lock();
-		try
-		{
-			getInstance().deInitialize();
-		}
-		finally
-		{
-			INSTANCE_LOCK.unlock();
-		}
+
 	}
 
-	public static Database getInstance()
+	@Override
+	protected void handleOrderProductRemoved(Order order, Product product)
 	{
-		INSTANCE_LOCK.lock();
-		try
-		{
-			if(INSTANCE == null)
-			{
-				INSTANCE = new Database();
-			}
 
-			return INSTANCE;
-		}
-		finally
-		{
-			INSTANCE_LOCK.unlock();
-		}
+	}
+
+	@Override
+	protected void handleProductPhaseAdded(Product product, Phase phase)
+	{
+
+	}
+
+	@Override
+	protected void handleProductPhaseRemoved(Product product, Phase phase)
+	{
+
+	}
+
+	@Override
+	protected void handleProductPhaseStartDateChanged(ProductPhase productPhase)
+	{
+
+	}
+
+	@Override
+	protected void handleProductPhaseEndDateChanged(ProductPhase productPhase)
+	{
+
+	}
+
+	@Override
+	protected void handleProductPhaseStatusChanged(ProductPhase productPhase)
+	{
+
+	}
+
+	@Override
+	protected void handleUserOrderAdded(User user, Order order)
+	{
+
+	}
+
+	@Override
+	protected void handleUserOrderRemoved(User user, Order order)
+	{
+
 	}
 }

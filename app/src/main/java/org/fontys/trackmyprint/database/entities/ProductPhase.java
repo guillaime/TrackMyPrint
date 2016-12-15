@@ -10,8 +10,41 @@ import java.util.concurrent.locks.ReentrantLock;
 /**
  * Created by guido on 15-Dec-16.
  */
-public final class ProductPhase extends Observable implements Observer
+public final class ProductPhase extends Entity implements Observer
 {
+	public enum ChangeType
+	{
+		NONE(-1),
+		START_DATE_CHANGED(0),
+		END_DATE_CHANGED(1),
+		PRODUCT_PHASE_STATUS_CHANGED(2);
+
+		private final int id;
+
+		ChangeType(int id)
+		{
+			this.id = id;
+		}
+
+		public static ChangeType findById(int id)
+		{
+			for(ChangeType changeType : ChangeType.values())
+			{
+				if(changeType.id == id)
+				{
+					return changeType;
+				}
+			}
+
+			return NONE;
+		}
+
+		public int getId()
+		{
+			return this.id;
+		}
+	}
+
 	public enum ProductPhaseStatus
 	{
 		NONE(-1);
@@ -55,9 +88,11 @@ public final class ProductPhase extends Observable implements Observer
 		throws
 		IllegalArgumentException
 	{
-		Throw.IfNull(IllegalArgumentException.class, productPhaseId, "productPhaseId");
-		Throw.IfNull(IllegalArgumentException.class, employee, "employee");
-		Throw.IfNull(IllegalArgumentException.class, phase, "phase");
+		super(EntityType.PRODUCT_PHASE);
+
+		Throw.ifNull(IllegalArgumentException.class, productPhaseId, "productPhaseId");
+		Throw.ifNull(IllegalArgumentException.class, employee, "employee");
+		Throw.ifNull(IllegalArgumentException.class, phase, "phase");
 
 		this.productPhaseId = productPhaseId;
 		this.startDate = startDate;
@@ -71,6 +106,13 @@ public final class ProductPhase extends Observable implements Observer
 		this.phase.addObserver(this);
 
 		this.hashCode = 31 * this.productPhaseId.hashCode();
+	}
+
+	public ProductPhase(String productPhaseId, Employee employee, Phase phase)
+			throws
+			IllegalArgumentException
+	{
+		this(productPhaseId, null, null, ProductPhaseStatus.NONE, employee, phase);
 	}
 
 	@Override
@@ -96,7 +138,7 @@ public final class ProductPhase extends Observable implements Observer
 		this.lock.lock();
 		try
 		{
-			notifyObservers();
+			notifyObservers(arg);
 		}
 		finally
 		{
@@ -134,7 +176,7 @@ public final class ProductPhase extends Observable implements Observer
 
 			this.startDate = set;
 
-			notifyObservers();
+			notifyObservers(new EntityChanged(this, ChangeType.START_DATE_CHANGED.getId()));
 		}
 		finally
 		{
@@ -167,7 +209,7 @@ public final class ProductPhase extends Observable implements Observer
 
 			this.endDate = set;
 
-			notifyObservers();
+			notifyObservers(new EntityChanged(this, ChangeType.END_DATE_CHANGED.getId()));
 		}
 		finally
 		{
@@ -200,7 +242,7 @@ public final class ProductPhase extends Observable implements Observer
 
 			this.productPhaseStatus = set;
 
-			notifyObservers();
+			notifyObservers(new EntityChanged(this, ChangeType.PRODUCT_PHASE_STATUS_CHANGED.getId()));
 		}
 		finally
 		{

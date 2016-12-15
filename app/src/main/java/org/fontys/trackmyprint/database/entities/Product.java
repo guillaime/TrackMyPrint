@@ -12,8 +12,40 @@ import java.util.concurrent.locks.ReentrantLock;
 /**
  * Created by guido on 15-Dec-16.
  */
-public final class Product extends Observable implements Observer
+public final class Product extends Entity implements Observer
 {
+	public enum ChangeType
+	{
+		NONE(-1),
+		PRODUCT_PHASE_ADDED(0),
+		PRODUCT_PHASE_REMOVED(1);
+
+		private final int id;
+
+		ChangeType(int id)
+		{
+			this.id = id;
+		}
+
+		public static ChangeType findById(int id)
+		{
+			for(ChangeType changeType : ChangeType.values())
+			{
+				if(changeType.id == id)
+				{
+					return changeType;
+				}
+			}
+
+			return NONE;
+		}
+
+		public int getId()
+		{
+			return this.id;
+		}
+	}
+
 	private final String productId;
 	private final String name;
 	private final String image;
@@ -28,12 +60,14 @@ public final class Product extends Observable implements Observer
 			throws
 			IllegalArgumentException
 	{
-		Throw.IfNull(IllegalArgumentException.class, productId, "productId");
-		Throw.IfNull(IllegalArgumentException.class, name, "name");
-		Throw.IfNull(IllegalArgumentException.class, image, "image");
-		Throw.IfNull(IllegalArgumentException.class, description, "description");
-		Throw.IfNull(IllegalArgumentException.class, order, "order");
-		Throw.IfOutOfRangeInMin(IllegalArgumentException.class, amount, "amount", 0);
+		super(EntityType.PRODUCT);
+
+		Throw.ifNull(IllegalArgumentException.class, productId, "productId");
+		Throw.ifNull(IllegalArgumentException.class, name, "name");
+		Throw.ifNull(IllegalArgumentException.class, image, "image");
+		Throw.ifNull(IllegalArgumentException.class, description, "description");
+		Throw.ifNull(IllegalArgumentException.class, order, "order");
+		Throw.ifOutOfRangeInMin(IllegalArgumentException.class, amount, "amount", 0);
 
 		this.productId = productId;
 		this.name = name;
@@ -90,7 +124,7 @@ public final class Product extends Observable implements Observer
 		this.lock.lock();
 		try
 		{
-			notifyObservers();
+			notifyObservers(arg);
 		}
 		finally
 		{
@@ -102,7 +136,7 @@ public final class Product extends Observable implements Observer
 			throws
 			IllegalArgumentException
 	{
-		Throw.IfNull(IllegalArgumentException.class, productPhase, "productPhase");
+		Throw.ifNull(IllegalArgumentException.class, productPhase, "productPhase");
 
 		this.lock.lock();
 		try
@@ -115,7 +149,7 @@ public final class Product extends Observable implements Observer
 			this.productPhases.put(productPhase.getProductPhaseId(), productPhase);
 			productPhase.addObserver(this);
 
-			notifyObservers();
+			notifyObservers(new EntityChanged(this, ChangeType.PRODUCT_PHASE_ADDED.getId(), productPhase));
 
 			return true;
 		}
@@ -129,7 +163,7 @@ public final class Product extends Observable implements Observer
 			throws
 			IllegalArgumentException
 	{
-		Throw.IfNull(IllegalArgumentException.class, productPhase, "productPhase");
+		Throw.ifNull(IllegalArgumentException.class, productPhase, "productPhase");
 
 		this.lock.lock();
 		try
@@ -142,7 +176,7 @@ public final class Product extends Observable implements Observer
 
 			removedProductPhase.deleteObserver(this);
 
-			notifyObservers();
+			notifyObservers(new EntityChanged(this, ChangeType.PRODUCT_PHASE_REMOVED.getId(), removedProductPhase));
 
 			return true;
 		}
@@ -156,7 +190,7 @@ public final class Product extends Observable implements Observer
 			throws
 			IllegalArgumentException
 	{
-		Throw.IfNull(IllegalArgumentException.class, productPhaseId, "productPhaseId");
+		Throw.ifNull(IllegalArgumentException.class, productPhaseId, "productPhaseId");
 
 		this.lock.lock();
 		try
@@ -173,7 +207,7 @@ public final class Product extends Observable implements Observer
 			throws
 			IllegalArgumentException
 	{
-		Throw.IfNull(IllegalArgumentException.class, productPhase, "productPhase");
+		Throw.ifNull(IllegalArgumentException.class, productPhase, "productPhase");
 
 		this.lock.lock();
 		try

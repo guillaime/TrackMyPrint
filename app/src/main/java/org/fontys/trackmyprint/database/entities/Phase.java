@@ -2,14 +2,43 @@ package org.fontys.trackmyprint.database.entities;
 
 import org.fontys.trackmyprint.utils.Throw;
 
-import java.util.Observable;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Created by guido on 15-Dec-16.
  */
-public final class Phase extends Observable
+public final class Phase extends Entity
 {
+	public enum ChangeType
+	{
+		NONE(-1);
+
+		private final int id;
+
+		ChangeType(int id)
+		{
+			this.id = id;
+		}
+
+		public static ChangeType findById(int id)
+		{
+			for(ChangeType changeType : ChangeType.values())
+			{
+				if(changeType.id == id)
+				{
+					return changeType;
+				}
+			}
+
+			return NONE;
+		}
+
+		public int getId()
+		{
+			return this.id;
+		}
+	}
+
 	private final String phaseId;
 	private final String name;
 	private final ReentrantLock lock;
@@ -19,8 +48,10 @@ public final class Phase extends Observable
 			throws
 			IllegalArgumentException
 	{
-		Throw.IfNull(IllegalArgumentException.class, phaseId, "phaseId");
-		Throw.IfNull(IllegalArgumentException.class, name, "name");
+		super(EntityType.PHASE);
+
+		Throw.ifNull(IllegalArgumentException.class, phaseId, "phaseId");
+		Throw.ifNull(IllegalArgumentException.class, name, "name");
 
 		this.phaseId = phaseId;
 		this.name = name;

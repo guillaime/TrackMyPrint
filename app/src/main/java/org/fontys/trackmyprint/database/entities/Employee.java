@@ -9,8 +9,39 @@ import java.util.concurrent.locks.ReentrantLock;
 /**
  * Created by guido on 15-Dec-16.
  */
-public final class Employee extends Observable implements Observer
+public final class Employee extends Entity implements Observer
 {
+	public enum ChangeType
+	{
+		NONE(-1),
+		PHASE_CHANGED(0);
+
+		private final int id;
+
+		ChangeType(int id)
+		{
+			this.id = id;
+		}
+
+		public static ChangeType findById(int id)
+		{
+			for(ChangeType changeType : ChangeType.values())
+			{
+				if(changeType.id == id)
+				{
+					return changeType;
+				}
+			}
+
+			return NONE;
+		}
+
+		public int getId()
+		{
+			return this.id;
+		}
+	}
+
 	private final String employeeId;
 	private Phase phase;
 	private final String name;
@@ -21,8 +52,10 @@ public final class Employee extends Observable implements Observer
 			throws
 			IllegalArgumentException
 	{
-		Throw.IfNull(IllegalArgumentException.class, employeeId, "employeeId");
-		Throw.IfNull(IllegalArgumentException.class, name, "name");
+		super(EntityType.EMPLOYEE);
+
+		Throw.ifNull(IllegalArgumentException.class, employeeId, "employeeId");
+		Throw.ifNull(IllegalArgumentException.class, name, "name");
 
 		this.employeeId = employeeId;
 		this.phase = phase;
@@ -67,7 +100,7 @@ public final class Employee extends Observable implements Observer
 		this.lock.lock();
 		try
 		{
-			notifyObservers();
+			notifyObservers(arg);
 		}
 		finally
 		{
@@ -115,7 +148,7 @@ public final class Employee extends Observable implements Observer
 				this.phase.addObserver(this);
 			}
 
-			notifyObservers();
+			notifyObservers(new EntityChanged(this, ChangeType.PHASE_CHANGED.getId()));
 		}
 		finally
 		{
