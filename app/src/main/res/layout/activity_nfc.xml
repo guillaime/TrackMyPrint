@@ -60,9 +60,9 @@
         android:background="@android:color/transparent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        android:layout_height="45dp"
+        android:layout_height="43dp"
         app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_width="0dp"
+        android:layout_width="360dp"
         app:layout_constraintHorizontal_bias="0.0" />
 
     <TextView
