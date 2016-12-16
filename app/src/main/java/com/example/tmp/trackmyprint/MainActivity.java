@@ -19,12 +19,12 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         List<production_proccess> names = new ArrayList<>();
-        names.add(new production_proccess("Order Received"));
-        names.add(new production_proccess("Printing Pending"));
-        names.add(new production_proccess("Cutting not started"));
-        names.add(new production_proccess("Quality Control not started"));
-        names.add(new production_proccess("Packaging"));
-        names.add(new production_proccess("Shipping"));
+        names.add(new production_proccess("Order Received", "order_received"));
+        names.add(new production_proccess("Printing Pending", "printed"));
+        names.add(new production_proccess("Cutting not started", "cut"));
+        names.add(new production_proccess("Quality Control not started", "quality_check"));
+        names.add(new production_proccess("Packaging", "packaging"));
+        names.add(new production_proccess("Shipping", "shipped"));
 
         production_proccess_list_adapter a = new production_proccess_list_adapter(this, names);
         ListView lv = (ListView) findViewById(R.id.production_proccess);
