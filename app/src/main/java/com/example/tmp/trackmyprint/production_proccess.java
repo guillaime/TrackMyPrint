@@ -7,8 +7,11 @@ package com.example.tmp.trackmyprint;
 public class production_proccess {
 
     public String name;
+    public String iconName;
 
-    public production_proccess(String name) {
+    public production_proccess(String name, String iconName) {
         this.name = name;
+        this.name = iconName;
     }
+
 }
