@@ -39,5 +39,16 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        // Deze is temporary om naar de userList te gaan.
+        ImageView checkIn2 = (ImageView) findViewById(R.id.profile_image);
+        checkIn2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, userProcessListActivity.class);
+                startActivity(intent);
+            }
+        });
+
+
     }
 }
