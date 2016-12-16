@@ -16,6 +16,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".nfcActivity" />
+        <activity android:name=".mapActivity"></activity>
+        <activity android:name=".nfcActivity" />
         <activity android:name=".userProcessListActivity"></activity>
     </application>
 
