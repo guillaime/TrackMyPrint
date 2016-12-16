@@ -19,6 +19,14 @@ public final class Throw
 		throw create(tClass, message);
 	}
 
+	public static <T extends Exception> void always(Class<T> tClass, Throwable cause)
+			throws
+			RuntimeException,
+			T
+	{
+		throw create(tClass, cause);
+	}
+
 	public static <T extends Exception> void when(Class<T> tClass, boolean condition, String message)
 			throws
 			RuntimeException,
@@ -70,6 +78,20 @@ public final class Throw
 		try
 		{
 			return tClass.getDeclaredConstructor(String.class).newInstance(message);
+		}
+		catch(Exception ex)
+		{
+			throw new RuntimeException(ex);
+		}
+	}
+
+	private static <T extends Exception> T create(Class<T> tClass, Throwable cause)
+			throws
+			RuntimeException
+	{
+		try
+		{
+			return tClass.getDeclaredConstructor(String.class).newInstance(cause);
 		}
 		catch(Exception ex)
 		{

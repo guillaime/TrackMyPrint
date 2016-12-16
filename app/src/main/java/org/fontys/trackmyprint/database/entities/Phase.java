@@ -76,7 +76,8 @@ public final class Phase extends Entity
 		return (hashCode() == obj.hashCode());
 	}
 
-	public String getPhaseId()
+	@Override
+	public String getId()
 	{
 		return this.phaseId;
 	}

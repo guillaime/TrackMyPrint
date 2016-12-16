@@ -1,12 +1,19 @@
 package org.fontys.trackmyprint.database.entities;
 
+import com.google.firebase.database.Exclude;
+
 import org.fontys.trackmyprint.utils.Throw;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.Set;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
@@ -49,7 +56,17 @@ public final class User extends Entity implements Observer
 	private final String userId;
 	private final Map<String, Order> orders;
 	private final ReentrantLock lock;
-	private final int hashCode;
+	private final List<String> testOrders;
+
+	private User()
+	{
+		super(EntityType.USER);
+
+		this.userId = null;
+		this.orders = new HashMap<>();
+		this.lock = new ReentrantLock();
+		this.testOrders = new ArrayList<>();
+	}
 
 	public User(String userId, Map<String, Order> orders)
 			throws
@@ -62,19 +79,20 @@ public final class User extends Entity implements Observer
 		this.userId = userId;
 		this.orders = new HashMap<>();
 		this.lock = new ReentrantLock();
+		this.testOrders = new ArrayList<>();
+
+		this.testOrders.add("some order");
 
 		if(orders != null)
 		{
 			for(Order order : orders.values())
 			{
-				if(this.orders.put(order.getOrderId(), order) == null)
+				if(this.orders.put(order.getId(), order) == null)
 				{
 					order.addObserver(this);
 				}
 			}
 		}
-
-		this.hashCode = 31 * this.userId.hashCode();
 	}
 
 	public User(String userId)
@@ -87,7 +105,7 @@ public final class User extends Entity implements Observer
 	@Override
 	public int hashCode()
 	{
-		return this.hashCode;
+		return (31 * this.userId.hashCode());
 	}
 
 	@Override
@@ -124,12 +142,12 @@ public final class User extends Entity implements Observer
 		this.lock.lock();
 		try
 		{
-			if(this.orders.containsKey(order.getOrderId()))
+			if(this.orders.containsKey(order.getId()))
 			{
 				return false;
 			}
 
-			this.orders.put(order.getOrderId(), order);
+			this.orders.put(order.getId(), order);
 			order.addObserver(this);
 
 			notifyObservers(new EntityChanged(this, ChangeType.ORDER_ADDED.getId(), order));
@@ -151,7 +169,7 @@ public final class User extends Entity implements Observer
 		this.lock.lock();
 		try
 		{
-			Order removedOrder = this.orders.remove(order.getOrderId());
+			Order removedOrder = this.orders.remove(order.getId());
 			if(removedOrder == null)
 			{
 				return false;
@@ -195,7 +213,7 @@ public final class User extends Entity implements Observer
 		this.lock.lock();
 		try
 		{
-			return hasOrder(order.getOrderId());
+			return hasOrder(order.getId());
 		}
 		finally
 		{
@@ -203,7 +221,8 @@ public final class User extends Entity implements Observer
 		}
 	}
 
-	public String getUserId()
+	@Override
+	public String getId()
 	{
 		return this.userId;
 	}
@@ -221,6 +240,12 @@ public final class User extends Entity implements Observer
 		}
 	}
 
+	public List<String> getTestOrders()
+	{
+		return Collections.unmodifiableList(this.testOrders);
+	}
+
+	@Exclude
 	public ReentrantLock getLock()
 	{
 		return this.lock;

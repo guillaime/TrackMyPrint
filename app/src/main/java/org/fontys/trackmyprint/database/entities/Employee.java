@@ -1,5 +1,7 @@
 package org.fontys.trackmyprint.database.entities;
 
+import com.google.firebase.database.Exclude;
+
 import org.fontys.trackmyprint.utils.Throw;
 
 import java.util.Observable;
@@ -43,10 +45,21 @@ public final class Employee extends Entity implements Observer
 	}
 
 	private final String employeeId;
+	private String phaseId;
 	private Phase phase;
 	private final String name;
 	private final ReentrantLock lock;
-	private final int hashCode;
+
+	private Employee()
+	{
+		super(EntityType.EMPLOYEE);
+
+		this.employeeId = null;
+		this.phaseId = null;
+		this.phase = null;
+		this.name = null;
+		this.lock = new ReentrantLock();
+	}
 
 	public Employee(String employeeId, Phase phase, String name)
 			throws
@@ -64,10 +77,13 @@ public final class Employee extends Entity implements Observer
 
 		if(this.phase != null)
 		{
+			this.phaseId = this.phase.getId();
 			this.phase.addObserver(this);
 		}
-
-		this.hashCode = 31 * this.employeeId.hashCode();
+		else
+		{
+			this.phaseId = null;
+		}
 	}
 
 	public Employee(String employeeId, String name)
@@ -80,7 +96,7 @@ public final class Employee extends Entity implements Observer
 	@Override
 	public int hashCode()
 	{
-		return this.hashCode;
+		return 31 * this.employeeId.hashCode();
 	}
 
 	@Override
@@ -108,11 +124,13 @@ public final class Employee extends Entity implements Observer
 		}
 	}
 
-	public String getEmployeeId()
+	@Override
+	public String getId()
 	{
 		return this.employeeId;
 	}
 
+	@Exclude
 	public Phase getPhase()
 	{
 		this.lock.lock();
@@ -126,6 +144,12 @@ public final class Employee extends Entity implements Observer
 		}
 	}
 
+	public String getPhaseId()
+	{
+		return this.phaseId;
+	}
+
+	@Exclude
 	public void setPhase(Phase set)
 	{
 		this.lock.lock();
@@ -145,7 +169,12 @@ public final class Employee extends Entity implements Observer
 
 			if(this.phase != null)
 			{
+				this.phaseId = this.phase.getId();
 				this.phase.addObserver(this);
+			}
+			else
+			{
+				this.phaseId = null;
 			}
 
 			notifyObservers(new EntityChanged(this, ChangeType.PHASE_CHANGED.getId()));
@@ -161,6 +190,7 @@ public final class Employee extends Entity implements Observer
 		return this.name;
 	}
 
+	@Exclude
 	public ReentrantLock getLock()
 	{
 		return this.lock;

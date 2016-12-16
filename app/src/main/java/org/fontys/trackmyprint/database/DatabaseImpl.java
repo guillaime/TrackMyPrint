@@ -18,7 +18,8 @@ public interface DatabaseImpl
 {
 	void initialize()
 			throws
-			IllegalStateException;
+			IllegalStateException,
+			DatabaseException;
 
 	void deInitialize();
 
@@ -77,12 +78,12 @@ public interface DatabaseImpl
 			IllegalArgumentException,
 			DatabaseException;
 
-	User createUser(Map<String, Order> orders)
+	User createUser(String userId, Map<String, Order> orders)
 			throws
 			IllegalArgumentException,
 			DatabaseException;
 
-	User createUser()
+	User createUser(String userId)
 			throws
 			IllegalArgumentException,
 			DatabaseException;
@@ -117,11 +118,15 @@ public interface DatabaseImpl
 			IllegalArgumentException,
 			DatabaseException;
 
-	Set<Phase> getPhases();
+	Map<String, Phase> getPhases();
 
-	Set<Employee> getEmployees();
+	Map<String, Employee> getEmployees();
 
-	Set<User> getUsers();
+	Map<String, User> getUsers();
 
-	Set<Order> getOrders();
+	Map<String, Order> getOrders();
+
+	Map<String, Product> getProducts();
+
+	Map<String, ProductPhase> getProductPhases();
 }

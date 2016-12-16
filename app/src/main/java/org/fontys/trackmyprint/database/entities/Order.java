@@ -109,7 +109,7 @@ public final class Order extends Entity implements Observer
 		{
 			for(Product product : products.values())
 			{
-				if(this.products.put(product.getProductId(), product) ==  null)
+				if(this.products.put(product.getId(), product) ==  null)
 				{
 					product.addObserver(this);
 				}
@@ -180,12 +180,12 @@ public final class Order extends Entity implements Observer
 		this.lock.lock();
 		try
 		{
-			if(this.products.containsKey(product.getProductId()))
+			if(this.products.containsKey(product.getId()))
 			{
 				return false;
 			}
 
-			this.products.put(product.getProductId(), product);
+			this.products.put(product.getId(), product);
 			product.addObserver(this);
 
 			notifyObservers(new EntityChanged(this, ChangeType.PRODUCT_ADDED.getId(), product));
@@ -207,7 +207,7 @@ public final class Order extends Entity implements Observer
 		this.lock.lock();
 		try
 		{
-			Product removedProduct = this.products.remove(product.getProductId());
+			Product removedProduct = this.products.remove(product.getId());
 			if(removedProduct == null)
 			{
 				return false;
@@ -251,7 +251,7 @@ public final class Order extends Entity implements Observer
 		this.lock.lock();
 		try
 		{
-			return hasProduct(product.getProductId());
+			return hasProduct(product.getId());
 		}
 		finally
 		{
@@ -259,7 +259,8 @@ public final class Order extends Entity implements Observer
 		}
 	}
 
-	public String getOrderId()
+	@Override
+	public String getId()
 	{
 		return this.orderId;
 	}

@@ -30,13 +30,14 @@ public final class Database implements DatabaseImpl
 
 	private Database()
 	{
-		this.databaseImpl = new FirebaseDatabase();
+		this.databaseImpl = new FirebaseDatabaseImpl();
 	}
 
 	@Override
 	public void initialize()
 			throws
-			IllegalStateException
+			IllegalStateException,
+			DatabaseException
 	{
 		this.databaseImpl.initialize();
 	}
@@ -152,21 +153,21 @@ public final class Database implements DatabaseImpl
 	}
 
 	@Override
-	public User createUser(Map<String, Order> orders)
+	public User createUser(String userId, Map<String, Order> orders)
 			throws
 			IllegalArgumentException,
 			DatabaseException
 	{
-		return this.databaseImpl.createUser(orders);
+		return this.databaseImpl.createUser(userId, orders);
 	}
 
 	@Override
-	public User createUser()
+	public User createUser(String userId)
 			throws
 			IllegalArgumentException,
 			DatabaseException
 	{
-		return this.databaseImpl.createUser();
+		return this.databaseImpl.createUser(userId);
 	}
 
 	@Override
@@ -224,32 +225,45 @@ public final class Database implements DatabaseImpl
 	}
 
 	@Override
-	public Set<Phase> getPhases()
+	public Map<String, Phase> getPhases()
 	{
 		return this.databaseImpl.getPhases();
 	}
 
 	@Override
-	public Set<Employee> getEmployees()
+	public Map<String, Employee> getEmployees()
 	{
 		return this.databaseImpl.getEmployees();
 	}
 
 	@Override
-	public Set<User> getUsers()
+	public Map<String, User> getUsers()
 	{
 		return this.databaseImpl.getUsers();
 	}
 
 	@Override
-	public Set<Order> getOrders()
+	public Map<String, Order> getOrders()
 	{
 		return this.databaseImpl.getOrders();
 	}
 
+	@Override
+	public Map<String, Product> getProducts()
+	{
+		return this.databaseImpl.getProducts();
+	}
+
+	@Override
+	public Map<String, ProductPhase> getProductPhases()
+	{
+		return this.databaseImpl.getProductPhases();
+	}
+
 	public static void initializeInstance()
 			throws
-			IllegalStateException
+			IllegalStateException,
+			DatabaseException
 	{
 		INSTANCE_LOCK.lock();
 		try

@@ -84,7 +84,7 @@ public final class Product extends Entity implements Observer
 		{
 			for(ProductPhase productPhase : productPhases.values())
 			{
-				if(this.productPhases.put(productPhase.getProductPhaseId(), productPhase) == null)
+				if(this.productPhases.put(productPhase.getId(), productPhase) == null)
 				{
 					productPhase.addObserver(this);
 				}
@@ -141,12 +141,12 @@ public final class Product extends Entity implements Observer
 		this.lock.lock();
 		try
 		{
-			if(this.productPhases.containsKey(productPhase.getProductPhaseId()))
+			if(this.productPhases.containsKey(productPhase.getId()))
 			{
 				return false;
 			}
 
-			this.productPhases.put(productPhase.getProductPhaseId(), productPhase);
+			this.productPhases.put(productPhase.getId(), productPhase);
 			productPhase.addObserver(this);
 
 			notifyObservers(new EntityChanged(this, ChangeType.PRODUCT_PHASE_ADDED.getId(), productPhase));
@@ -168,7 +168,7 @@ public final class Product extends Entity implements Observer
 		this.lock.lock();
 		try
 		{
-			ProductPhase removedProductPhase = this.productPhases.remove(productPhase.getProductPhaseId());
+			ProductPhase removedProductPhase = this.productPhases.remove(productPhase.getId());
 			if(removedProductPhase == null)
 			{
 				return false;
@@ -212,7 +212,7 @@ public final class Product extends Entity implements Observer
 		this.lock.lock();
 		try
 		{
-			return hasProductPhase(productPhase.getProductPhaseId());
+			return hasProductPhase(productPhase.getId());
 		}
 		finally
 		{
@@ -220,7 +220,8 @@ public final class Product extends Entity implements Observer
 		}
 	}
 
-	public String getProductId()
+	@Override
+	public String getId()
 	{
 		return this.productId;
 	}

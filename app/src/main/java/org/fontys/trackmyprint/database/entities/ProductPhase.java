@@ -146,7 +146,8 @@ public final class ProductPhase extends Entity implements Observer
 		}
 	}
 
-	public String getProductPhaseId()
+	@Override
+	public String getId()
 	{
 		return this.productPhaseId;
 	}

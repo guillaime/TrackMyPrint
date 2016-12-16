@@ -1,5 +1,7 @@
 package org.fontys.trackmyprint.database.entities;
 
+import com.google.firebase.database.Exclude;
+
 import java.util.Observable;
 
 /**
@@ -25,8 +27,11 @@ public abstract class Entity extends Observable
 		this.entityType = entityType;
 	}
 
+	@Exclude
 	public EntityType getEntityType()
 	{
 		return this.entityType;
 	}
+
+	public abstract String getId();
 }
