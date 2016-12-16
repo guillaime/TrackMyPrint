@@ -40,9 +40,11 @@ public class production_proccess_list_adapter extends ArrayAdapter<production_pr
         TextView title = (TextView) cv.findViewById(R.id.production_proccess_title);
         title.setText(pp.name);
         return cv;
-
     }
 
+    public production_proccess getPP(int pos){
+        return production_proccesses.get(pos);
+    }
 
 
 
