@@ -16,12 +16,14 @@ import org.fontys.trackmyprint.database.entities.ProductPhase;
 import org.fontys.trackmyprint.database.entities.User;
 import org.fontys.trackmyprint.utils.Throw;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.locks.ReentrantLock;
@@ -44,7 +46,7 @@ public final class FirebaseDatabaseImpl implements DatabaseImpl
 								 DatabaseInitializedTrigger databaseInitializedTrigger)
 		{
 			this.tClass = tClass;
-			this.dataMap = Collections.unmodifiableMap(dataMap);
+			this.dataMap = dataMap;
 			this.lock = lock;
 			this.databaseListeners = databaseListeners;
 			this.databaseInitializedTrigger = databaseInitializedTrigger;
@@ -65,7 +67,7 @@ public final class FirebaseDatabaseImpl implements DatabaseImpl
 
 				for(DatabaseListener databaseListener : this.databaseListeners)
 				{
-					this.databaseInitializedTrigger.trigger(databaseListener, this.dataMap);
+					this.databaseInitializedTrigger.trigger(databaseListener, Collections.unmodifiableMap(this.dataMap));
 				}
 			}
 			finally
@@ -302,6 +304,7 @@ public final class FirebaseDatabaseImpl implements DatabaseImpl
 	private ChildEventListener productChildEventListener;
 	private ChildEventListener productPhaseChildEventLister;
 	private ChildEventListener userChildEventListener;
+	private final SimpleDateFormat simpleDateFormat;
 
 	public FirebaseDatabaseImpl()
 	{
@@ -328,6 +331,7 @@ public final class FirebaseDatabaseImpl implements DatabaseImpl
 		this.productChildEventListener = null;
 		this.productPhaseChildEventLister = null;
 		this.userChildEventListener = null;
+		this.simpleDateFormat = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy", Locale.ENGLISH);
 	}
 
 	@Override
@@ -559,7 +563,7 @@ public final class FirebaseDatabaseImpl implements DatabaseImpl
 			}
 
 			Order newOrder = new Order(newOrderRef.getKey(), user.getId(), orderStatus,
-									   orderDate == null ? null : orderDate.toString(), productIds);
+									   orderDate == null ? null : this.simpleDateFormat.format(orderDate.getTime()), productIds);
 
 			newOrderRef.setValue(newOrder);
 
@@ -709,9 +713,9 @@ public final class FirebaseDatabaseImpl implements DatabaseImpl
 
 			ProductPhase newProductPhase = new ProductPhase(newProductPhaseRef.getKey(),
 															startDate ==
-															null ? null : startDate.toString(),
+															null ? null : this.simpleDateFormat.format(startDate.getTime()),
 															endDate ==
-															null ? null : endDate.toString(),
+															null ? null : this.simpleDateFormat.format(endDate.getTime()),
 															productPhaseStatus, employee.getId(),
 															phase.getId());
 

@@ -12,7 +12,6 @@ import java.util.Map;
 /**
  * Created by guido on 22-Dec-16.
  */
-
 public interface DatabaseListener
 {
 	void onEmployeesInitialized(Map<String, Employee> employees);
