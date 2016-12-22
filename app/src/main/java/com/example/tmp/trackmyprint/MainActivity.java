@@ -1,20 +1,21 @@
 package com.example.tmp.trackmyprint;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.ListView;
 
 import org.fontys.trackmyprint.database.Database;
-import org.fontys.trackmyprint.database.entities.Employee;
-import org.fontys.trackmyprint.database.entities.Order;
-import org.fontys.trackmyprint.database.entities.Phase;
-import org.fontys.trackmyprint.database.entities.Product;
-import org.fontys.trackmyprint.database.entities.ProductPhase;
-import org.fontys.trackmyprint.database.entities.User;
 
-import java.util.Calendar;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity
 {
+	private production_proccess_list_adapter adapter;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
@@ -24,17 +25,42 @@ public class MainActivity extends AppCompatActivity
 		{
 			Database.initializeInstance();
 
-			User user = Database.getInstance().createUser("2342343");
-			Phase phase = Database.getInstance().createPhase("A phase");
-			Employee employee = Database.getInstance().createEmployee(phase, "An employee");
-			ProductPhase productPhase = Database.getInstance().createProductPhase(employee, phase);
-			Order order = Database.getInstance().createOrder(user, Order.OrderStatus.NONE, Calendar.getInstance());
-			Product product = Database.getInstance().createProduct("A product", "Some image", "Product Desc", 100, order);
-			product.addProductPhaseId(productPhase.getId());
-			order.addProductId(product.getId());
+			setContentView(R.layout.activity_main);
 
-			Database.getInstance().update(product);
-			Database.getInstance().update(order);
+			List<production_proccess> names = new ArrayList<>();
+			names.add(new production_proccess("Order Received", "order_received"));
+			names.add(new production_proccess("Printing Pending", "printed"));
+			names.add(new production_proccess("Cutting not started", "cut"));
+			names.add(new production_proccess("Quality Control not started", "quality_check"));
+			names.add(new production_proccess("Packaging", "packaging"));
+			names.add(new production_proccess("Shipping", "shipped"));
+
+			adapter = new production_proccess_list_adapter(this, names);
+			ListView lv = (ListView) findViewById(R.id.production_proccess);
+			lv.setAdapter(adapter);
+
+			ImageView checkIn = (ImageView) findViewById(R.id.check_in_status);
+			checkIn.setOnClickListener(new View.OnClickListener()
+			{
+				@Override
+				public void onClick(View v)
+				{
+					Intent intent = new Intent(MainActivity.this, nfcActivity.class);
+					startActivity(intent);
+				}
+			});
+
+			// Deze is temporary om naar de userList te gaan.
+			ImageView checkIn2 = (ImageView) findViewById(R.id.profile_image);
+			checkIn2.setOnClickListener(new View.OnClickListener()
+			{
+				@Override
+				public void onClick(View v)
+				{
+					Intent intent = new Intent(MainActivity.this, userProcessListActivity.class);
+					startActivity(intent);
+				}
+			});
 		}
 		catch(Exception ex)
 		{
