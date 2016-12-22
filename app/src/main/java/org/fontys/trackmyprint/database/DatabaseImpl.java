@@ -9,7 +9,6 @@ import org.fontys.trackmyprint.database.entities.User;
 
 import java.util.Calendar;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Created by guido on 15-Dec-16.
@@ -118,6 +117,36 @@ public interface DatabaseImpl
 			IllegalArgumentException,
 			DatabaseException;
 
+	void update(Employee employee)
+			throws
+			IllegalArgumentException,
+			DatabaseException;
+
+	void update(Order order)
+			throws
+			IllegalArgumentException,
+			DatabaseException;
+
+	void update(Phase phase)
+			throws
+			IllegalArgumentException,
+			DatabaseException;
+
+	void update(Product product)
+			throws
+			IllegalArgumentException,
+			DatabaseException;
+
+	void update(ProductPhase productPhase)
+			throws
+			IllegalArgumentException,
+			DatabaseException;
+
+	void update(User user)
+			throws
+			IllegalArgumentException,
+			DatabaseException;
+
 	Map<String, Phase> getPhases();
 
 	Map<String, Employee> getEmployees();
@@ -129,4 +158,8 @@ public interface DatabaseImpl
 	Map<String, Product> getProducts();
 
 	Map<String, ProductPhase> getProductPhases();
+
+	void addDatabaseListener(DatabaseListener databaseListener);
+
+	void removeDatabaseListener(DatabaseListener databaseListener);
 }

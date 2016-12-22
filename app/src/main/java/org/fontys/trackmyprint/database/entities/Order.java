@@ -1,53 +1,19 @@
 package org.fontys.trackmyprint.database.entities;
 
+import com.google.firebase.database.Exclude;
+
 import org.fontys.trackmyprint.utils.Throw;
 
-import java.util.Calendar;
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Observable;
-import java.util.Observer;
+import java.util.List;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Created by guido on 15-Dec-16.
  */
-public final class Order extends Entity implements Observer
+public final class Order extends Entity
 {
-	public enum ChangeType
-	{
-		NONE(-1),
-		PRODUCT_ADDED(0),
-		PRODUCT_REMOVED(1),
-		ORDER_STATUS_CHANGED(2);
-
-		private final int id;
-
-		ChangeType(int id)
-		{
-			this.id = id;
-		}
-
-		public static ChangeType findById(int id)
-		{
-			for(ChangeType changeType : ChangeType.values())
-			{
-				if(changeType.id == id)
-				{
-					return changeType;
-				}
-			}
-
-			return NONE;
-		}
-
-		public int getId()
-		{
-			return this.id;
-		}
-	}
-
 	public enum OrderStatus
 	{
 		NONE(-1);
@@ -79,71 +45,78 @@ public final class Order extends Entity implements Observer
 	}
 
 	private final String orderId;
-	private final User user;
+	private final String userId;
 	private OrderStatus orderStatus;
-	private final Calendar orderDate;
-	private final Map<String, Product> products;
+	private final String orderDate;
+	private final List<String> productIds;
 	private final ReentrantLock lock;
-	private final int hashCode;
 
-	public Order(String orderId, User user, OrderStatus orderStatus, Calendar orderDate, Map<String, Product> products)
+	public Order()
+	{
+		super(EntityType.ORDER);
+
+		this.orderId = null;
+		this.userId = null;
+		this.orderStatus = OrderStatus.NONE;
+		this.orderDate = null;
+		this.productIds = null;
+		this.lock = new ReentrantLock();
+	}
+
+	public Order(String orderId, String userId, OrderStatus orderStatus, String orderDate, List<String> productIds)
 		throws
 		IllegalArgumentException
 	{
 		super(EntityType.ORDER);
 
 		Throw.ifNull(IllegalArgumentException.class, orderId, "orderId");
-		Throw.ifNull(IllegalArgumentException.class, user, "user");
+		Throw.ifNull(IllegalArgumentException.class, userId, "userId");
 		Throw.ifNull(IllegalArgumentException.class, orderDate, "orderDate");
 
 		this.orderId = orderId;
-		this.user = user;
+		this.userId = userId;
 		this.orderStatus = orderStatus;
 		this.orderDate = orderDate;
-		this.products = new HashMap<>();
+		this.productIds = new ArrayList<>();
 		this.lock = new ReentrantLock();
 
-		this.user.addObserver(this);
-
-		if(products != null)
+		if(productIds != null)
 		{
-			for(Product product : products.values())
+			for(String productId : productIds)
 			{
-				if(this.products.put(product.getId(), product) ==  null)
+				if(!this.productIds.contains(productId))
 				{
-					product.addObserver(this);
+					this.productIds.add(productId);
 				}
 			}
 		}
-
-		this.hashCode = 31 * this.orderId.hashCode();
 	}
 
-	public Order(String orderId, User user, OrderStatus orderStatus, Calendar orderDate)
+	public Order(String orderId, String userId, OrderStatus orderStatus, String orderDate)
 			throws
 			IllegalArgumentException
 	{
-		this(orderId, user, orderStatus, orderDate, null);
+		this(orderId, userId, orderStatus, orderDate, null);
 	}
 
-	public Order(String orderId, User user, Calendar orderDate, Map<String, Product> products)
+	public Order(String orderId, String userId, String orderDate, List<String> productIds)
 			throws
 			IllegalArgumentException
 	{
-		this(orderId, user, OrderStatus.NONE, orderDate, products);
+		this(orderId, userId, OrderStatus.NONE, orderDate, productIds);
 	}
 
-	public Order(String orderId, User user, Calendar orderDate)
+	public Order(String orderId, String userId, String orderDate)
 			throws
 			IllegalArgumentException
 	{
-		this(orderId, user, OrderStatus.NONE, orderDate, null);
+		this(orderId, userId, OrderStatus.NONE, orderDate, null);
 	}
 
 	@Override
 	public int hashCode()
 	{
-		return this.hashCode;
+		return 31 * this.orderId.hashCode();
 	}
 
 	@Override
@@ -157,38 +130,21 @@ public final class Order extends Entity implements Observer
 		return (hashCode() == obj.hashCode());
 	}
 
-	@Override
-	public void update(Observable o, Object arg)
-	{
-		this.lock.lock();
-		try
-		{
-			notifyObservers(arg);
-		}
-		finally
-		{
-			this.lock.unlock();
-		}
-	}
-
-	public boolean addProduct(Product product)
+	public boolean addProductId(String productId)
 			throws
 			IllegalArgumentException
 	{
-		Throw.ifNull(IllegalArgumentException.class, product, "product");
+		Throw.ifNull(IllegalArgumentException.class, productId, "productId");
 
 		this.lock.lock();
 		try
 		{
-			if(this.products.containsKey(product.getId()))
+			if(this.productIds.contains(productId))
 			{
 				return false;
 			}
 
-			this.products.put(product.getId(), product);
-			product.addObserver(this);
-
-			notifyObservers(new EntityChanged(this, ChangeType.PRODUCT_ADDED.getId(), product));
+			this.productIds.add(productId);
 
 			return true;
 		}
@@ -198,26 +154,16 @@ public final class Order extends Entity implements Observer
 		}
 	}
 
-	public boolean removeProduct(Product product)
+	public boolean removeProductId(String productId)
 		throws
 		IllegalArgumentException
 	{
-		Throw.ifNull(IllegalArgumentException.class, product, "product");
+		Throw.ifNull(IllegalArgumentException.class, productId, "productId");
 
 		this.lock.lock();
 		try
 		{
-			Product removedProduct = this.products.remove(product.getId());
-			if(removedProduct == null)
-			{
-				return false;
-			}
-
-			removedProduct.deleteObserver(this);
-
-			notifyObservers(new EntityChanged(this, ChangeType.PRODUCT_REMOVED.getId(), removedProduct));
-
-			return true;
+			return this.productIds.remove(productId);
 		}
 		finally
 		{
@@ -234,24 +180,7 @@ public final class Order extends Entity implements Observer
 		this.lock.lock();
 		try
 		{
-			return this.products.containsKey(productId);
-		}
-		finally
-		{
-			this.lock.unlock();
-		}
-	}
-
-	public boolean hasProduct(Product product)
-			throws
-			IllegalArgumentException
-	{
-		Throw.ifNull(IllegalArgumentException.class, product, "product");
-
-		this.lock.lock();
-		try
-		{
-			return hasProduct(product.getId());
+			return this.productIds.contains(productId);
 		}
 		finally
 		{
@@ -265,9 +194,9 @@ public final class Order extends Entity implements Observer
 		return this.orderId;
 	}
 
-	public User getUser()
+	public String getUserId()
 	{
-		return this.user;
+		return this.userId;
 	}
 
 	public OrderStatus getOrderStatus()
@@ -294,8 +223,6 @@ public final class Order extends Entity implements Observer
 			}
 
 			this.orderStatus = set;
-
-			notifyObservers(new EntityChanged(this, ChangeType.ORDER_STATUS_CHANGED.getId()));
 		}
 		finally
 		{
@@ -303,17 +230,17 @@ public final class Order extends Entity implements Observer
 		}
 	}
 
-	public Calendar getOrderDate()
+	public String getOrderDate()
 	{
 		return this.orderDate;
 	}
 
-	public Map<String, Product> getProducts()
+	public List<String> getProductIds()
 	{
 		this.lock.lock();
 		try
 		{
-			return Collections.unmodifiableMap(this.products);
+			return Collections.unmodifiableList(this.productIds);
 		}
 		finally
 		{
@@ -321,6 +248,7 @@ public final class Order extends Entity implements Observer
 		}
 	}
 
+	@Exclude
 	public ReentrantLock getLock()
 	{
 		return this.lock;

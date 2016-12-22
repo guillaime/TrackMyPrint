@@ -15,8 +15,6 @@ public class MainActivity extends AppCompatActivity
 		try
 		{
 			Database.initializeInstance();
-
-			Database.getInstance().createUser("2342343");
 		}
 		catch(Exception ex)
 		{

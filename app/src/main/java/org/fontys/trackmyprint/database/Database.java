@@ -9,7 +9,6 @@ import org.fontys.trackmyprint.database.entities.User;
 
 import java.util.Calendar;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
@@ -225,6 +224,60 @@ public final class Database implements DatabaseImpl
 	}
 
 	@Override
+	public void update(Employee employee)
+			throws
+			IllegalArgumentException,
+			DatabaseException
+	{
+		this.databaseImpl.update(employee);
+	}
+
+	@Override
+	public void update(Order order)
+			throws
+			IllegalArgumentException,
+			DatabaseException
+	{
+		this.databaseImpl.update(order);
+	}
+
+	@Override
+	public void update(Phase phase)
+			throws
+			IllegalArgumentException,
+			DatabaseException
+	{
+		this.databaseImpl.update(phase);
+	}
+
+	@Override
+	public void update(Product product)
+			throws
+			IllegalArgumentException,
+			DatabaseException
+	{
+		this.databaseImpl.update(product);
+	}
+
+	@Override
+	public void update(ProductPhase productPhase)
+			throws
+			IllegalArgumentException,
+			DatabaseException
+	{
+		this.databaseImpl.update(productPhase);
+	}
+
+	@Override
+	public void update(User user)
+			throws
+			IllegalArgumentException,
+			DatabaseException
+	{
+		this.databaseImpl.update(user);
+	}
+
+	@Override
 	public Map<String, Phase> getPhases()
 	{
 		return this.databaseImpl.getPhases();
@@ -258,6 +311,18 @@ public final class Database implements DatabaseImpl
 	public Map<String, ProductPhase> getProductPhases()
 	{
 		return this.databaseImpl.getProductPhases();
+	}
+
+	@Override
+	public void addDatabaseListener(DatabaseListener databaseListener)
+	{
+		this.databaseImpl.addDatabaseListener(databaseListener);
+	}
+
+	@Override
+	public void removeDatabaseListener(DatabaseListener databaseListener)
+	{
+		this.databaseImpl.removeDatabaseListener(databaseListener);
 	}
 
 	public static void initializeInstance()

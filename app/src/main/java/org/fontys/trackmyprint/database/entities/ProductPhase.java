@@ -1,50 +1,16 @@
 package org.fontys.trackmyprint.database.entities;
 
+import com.google.firebase.database.Exclude;
+
 import org.fontys.trackmyprint.utils.Throw;
 
-import java.util.Calendar;
-import java.util.Observable;
-import java.util.Observer;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Created by guido on 15-Dec-16.
  */
-public final class ProductPhase extends Entity implements Observer
+public final class ProductPhase extends Entity
 {
-	public enum ChangeType
-	{
-		NONE(-1),
-		START_DATE_CHANGED(0),
-		END_DATE_CHANGED(1),
-		PRODUCT_PHASE_STATUS_CHANGED(2);
-
-		private final int id;
-
-		ChangeType(int id)
-		{
-			this.id = id;
-		}
-
-		public static ChangeType findById(int id)
-		{
-			for(ChangeType changeType : ChangeType.values())
-			{
-				if(changeType.id == id)
-				{
-					return changeType;
-				}
-			}
-
-			return NONE;
-		}
-
-		public int getId()
-		{
-			return this.id;
-		}
-	}
-
 	public enum ProductPhaseStatus
 	{
 		NONE(-1);
@@ -76,49 +42,56 @@ public final class ProductPhase extends Entity implements Observer
 	}
 
 	private final String productPhaseId;
-	private Calendar startDate;
-	private Calendar endDate;
+	private String startDate;
+	private String endDate;
 	private ProductPhaseStatus productPhaseStatus;
-	private final Employee employee;
-	private final Phase phase;
+	private final String employeeId;
+	private final String phaseId;
 	private final ReentrantLock lock;
-	private final int hashCode;
 
-	public ProductPhase(String productPhaseId, Calendar startDate, Calendar endDate, ProductPhaseStatus productPhaseStatus, Employee employee, Phase phase)
+	public ProductPhase()
+	{
+		super(EntityType.PRODUCT_PHASE);
+
+		this.productPhaseId = null;
+		this.startDate = null;
+		this.endDate = null;
+		this.productPhaseStatus = ProductPhaseStatus.NONE;
+		this.employeeId = null;
+		this.phaseId = null;
+		this.lock = new ReentrantLock();
+	}
+
+	public ProductPhase(String productPhaseId, String startDate, String endDate, ProductPhaseStatus productPhaseStatus, String employeeId, String phaseId)
 		throws
 		IllegalArgumentException
 	{
 		super(EntityType.PRODUCT_PHASE);
 
 		Throw.ifNull(IllegalArgumentException.class, productPhaseId, "productPhaseId");
-		Throw.ifNull(IllegalArgumentException.class, employee, "employee");
-		Throw.ifNull(IllegalArgumentException.class, phase, "phase");
+		Throw.ifNull(IllegalArgumentException.class, employeeId, "employeeId");
+		Throw.ifNull(IllegalArgumentException.class, phaseId, "phaseId");
 
 		this.productPhaseId = productPhaseId;
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.productPhaseStatus = productPhaseStatus;
-		this.employee = employee;
-		this.phase = phase;
+		this.employeeId = employeeId;
+		this.phaseId = phaseId;
 		this.lock = new ReentrantLock();
-
-		this.employee.addObserver(this);
-		this.phase.addObserver(this);
-
-		this.hashCode = 31 * this.productPhaseId.hashCode();
 	}
 
-	public ProductPhase(String productPhaseId, Employee employee, Phase phase)
+	public ProductPhase(String productPhaseId, String employeeId, String phaseId)
 			throws
 			IllegalArgumentException
 	{
-		this(productPhaseId, null, null, ProductPhaseStatus.NONE, employee, phase);
+		this(productPhaseId, null, null, ProductPhaseStatus.NONE, employeeId, phaseId);
 	}
 
 	@Override
 	public int hashCode()
 	{
-		return this.hashCode;
+		return 31 * this.productPhaseId.hashCode();
 	}
 
 	@Override
@@ -133,26 +106,12 @@ public final class ProductPhase extends Entity implements Observer
 	}
 
 	@Override
-	public void update(Observable o, Object arg)
-	{
-		this.lock.lock();
-		try
-		{
-			notifyObservers(arg);
-		}
-		finally
-		{
-			this.lock.unlock();
-		}
-	}
-
-	@Override
 	public String getId()
 	{
 		return this.productPhaseId;
 	}
 
-	public Calendar getStartDate()
+	public String getStartDate()
 	{
 		this.lock.lock();
 		try
@@ -165,7 +124,7 @@ public final class ProductPhase extends Entity implements Observer
 		}
 	}
 
-	public void setStartDate(Calendar set)
+	public void setStartDate(String set)
 	{
 		this.lock.lock();
 		try
@@ -176,8 +135,6 @@ public final class ProductPhase extends Entity implements Observer
 			}
 
 			this.startDate = set;
-
-			notifyObservers(new EntityChanged(this, ChangeType.START_DATE_CHANGED.getId()));
 		}
 		finally
 		{
@@ -185,7 +142,7 @@ public final class ProductPhase extends Entity implements Observer
 		}
 	}
 
-	public Calendar getEndDate()
+	public String getEndDate()
 	{
 		this.lock.lock();
 		try
@@ -198,7 +155,7 @@ public final class ProductPhase extends Entity implements Observer
 		}
 	}
 
-	public void setEndDate(Calendar set)
+	public void setEndDate(String set)
 	{
 		this.lock.lock();
 		try
@@ -209,8 +166,6 @@ public final class ProductPhase extends Entity implements Observer
 			}
 
 			this.endDate = set;
-
-			notifyObservers(new EntityChanged(this, ChangeType.END_DATE_CHANGED.getId()));
 		}
 		finally
 		{
@@ -242,8 +197,6 @@ public final class ProductPhase extends Entity implements Observer
 			}
 
 			this.productPhaseStatus = set;
-
-			notifyObservers(new EntityChanged(this, ChangeType.PRODUCT_PHASE_STATUS_CHANGED.getId()));
 		}
 		finally
 		{
@@ -251,16 +204,17 @@ public final class ProductPhase extends Entity implements Observer
 		}
 	}
 
-	public Employee getEmployee()
+	public String getEmployeeId()
 	{
-		return this.employee;
+		return this.employeeId;
 	}
 
-	public Phase getPhase()
+	public String getPhaseId()
 	{
-		return this.phase;
+		return this.phaseId;
 	}
 
+	@Exclude
 	public ReentrantLock getLock()
 	{
 		return this.lock;

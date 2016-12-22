@@ -1,5 +1,7 @@
 package org.fontys.trackmyprint.database.entities;
 
+import com.google.firebase.database.Exclude;
+
 import org.fontys.trackmyprint.utils.Throw;
 
 import java.util.concurrent.locks.ReentrantLock;
@@ -9,40 +11,18 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public final class Phase extends Entity
 {
-	public enum ChangeType
-	{
-		NONE(-1);
-
-		private final int id;
-
-		ChangeType(int id)
-		{
-			this.id = id;
-		}
-
-		public static ChangeType findById(int id)
-		{
-			for(ChangeType changeType : ChangeType.values())
-			{
-				if(changeType.id == id)
-				{
-					return changeType;
-				}
-			}
-
-			return NONE;
-		}
-
-		public int getId()
-		{
-			return this.id;
-		}
-	}
-
 	private final String phaseId;
 	private final String name;
 	private final ReentrantLock lock;
-	private final int hashCode;
+
+	public Phase()
+	{
+		super(EntityType.PHASE);
+
+		this.phaseId  = null;
+		this.name = null;
+		this.lock = new ReentrantLock();
+	}
 
 	public Phase(String phaseId, String name)
 			throws
@@ -56,13 +36,12 @@ public final class Phase extends Entity
 		this.phaseId = phaseId;
 		this.name = name;
 		this.lock = new ReentrantLock();
-		this.hashCode = 31 * this.phaseId.hashCode();
 	}
 
 	@Override
 	public int hashCode()
 	{
-		return this.hashCode;
+		return 31 * this.phaseId.hashCode();
 	}
 
 	@Override
@@ -87,6 +66,7 @@ public final class Phase extends Entity
 		return this.name;
 	}
 
+	@Exclude
 	public ReentrantLock getLock()
 	{
 		return this.lock;
