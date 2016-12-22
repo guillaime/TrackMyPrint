@@ -4,54 +4,84 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.Toast;
+
+import org.fontys.trackmyprint.database.Database;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity
+{
+	private production_proccess_list_adapter adapter;
 
-    private production_proccess_list_adapter adapter;
+	@Override
+	protected void onCreate(Bundle savedInstanceState)
+	{
+		super.onCreate(savedInstanceState);
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+		try
+		{
+			Database.initializeInstance();
 
-        List<production_proccess> names = new ArrayList<>();
-        names.add(new production_proccess("Order Received", "order_received"));
-        names.add(new production_proccess("Printing Pending", "printed"));
-        names.add(new production_proccess("Cutting not started", "cut"));
-        names.add(new production_proccess("Quality Control not started", "quality_check"));
-        names.add(new production_proccess("Packaging", "packaging"));
-        names.add(new production_proccess("Shipping", "shipped"));
+			setContentView(R.layout.activity_main);
 
-        adapter = new production_proccess_list_adapter(this, names);
-        ListView lv = (ListView) findViewById(R.id.production_proccess);
-        lv.setAdapter(adapter);
+			List<production_proccess> names = new ArrayList<>();
+			names.add(new production_proccess("Order Received", "order_received"));
+			names.add(new production_proccess("Printing Pending", "printed"));
+			names.add(new production_proccess("Cutting not started", "cut"));
+			names.add(new production_proccess("Quality Control not started", "quality_check"));
+			names.add(new production_proccess("Packaging", "packaging"));
+			names.add(new production_proccess("Shipping", "shipped"));
 
-        ImageView checkIn = (ImageView) findViewById(R.id.check_in_status);
-        checkIn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, nfcActivity.class);
-                startActivity(intent);
-            }
-        });
+			adapter = new production_proccess_list_adapter(this, names);
+			ListView lv = (ListView) findViewById(R.id.production_proccess);
+			lv.setAdapter(adapter);
 
-        // Deze is temporary om naar de userList te gaan.
-        ImageView checkIn2 = (ImageView) findViewById(R.id.profile_image);
-        checkIn2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, userProcessListActivity.class);
-                startActivity(intent);
-            }
-        });
+			ImageView checkIn = (ImageView) findViewById(R.id.check_in_status);
+			checkIn.setOnClickListener(new View.OnClickListener()
+			{
+				@Override
+				public void onClick(View v)
+				{
+					Intent intent = new Intent(MainActivity.this, nfcActivity.class);
+					startActivity(intent);
+				}
+			});
 
+			// Deze is temporary om naar de userList te gaan.
+			ImageView checkIn2 = (ImageView) findViewById(R.id.profile_image);
+			checkIn2.setOnClickListener(new View.OnClickListener()
+			{
+				@Override
+				public void onClick(View v)
+				{
+					Intent intent = new Intent(MainActivity.this, userProcessListActivity.class);
+					startActivity(intent);
+				}
+			});
+		}
+		catch(Exception ex)
+		{
+			ex.printStackTrace();
+		}
 
-    }
+		setContentView(R.layout.activity_main);
+	}
+
+	@Override
+	protected void onDestroy()
+	{
+		super.onDestroy();
+
+		try
+		{
+			Database.deInitializeInstance();
+		}
+		catch(Exception ex)
+		{
+			ex.printStackTrace();
+		}
+	}
 }

@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "677656203084",
+    "firebase_url": "https://track-my-print.firebaseio.com",
+    "project_id": "track-my-print",
+    "storage_bucket": "track-my-print.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:677656203084:android:fcff1b29dc0315cc",
+        "android_client_info": {
+          "package_name": "org.fontys.trackmyprint"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "677656203084-6bjr46if17ak5r7guenp2gb4283q1ohu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAP1GLzlCZaHViDaCoICS-FLMLNgfstX8M"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
