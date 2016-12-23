@@ -6,82 +6,87 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import org.fontys.trackmyprint.database.Database;
+import org.fontys.trackmyprint.database.entities.Employee;
+import org.fontys.trackmyprint.database.entities.Phase;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity
-{
-	private production_proccess_list_adapter adapter;
+public class MainActivity extends AppCompatActivity {
+    private Employee currentEmployee;
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState)
-	{
-		super.onCreate(savedInstanceState);
+    private production_proccess_list_adapter adapter;
 
-		try
-		{
-			Database.initializeInstance();
+    private static MainActivity instance;
 
-			setContentView(R.layout.activity_main);
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
 
-			List<production_proccess> names = new ArrayList<>();
-			names.add(new production_proccess("Order Received", "order_received"));
-			names.add(new production_proccess("Printing Pending", "printed"));
-			names.add(new production_proccess("Cutting not started", "cut"));
-			names.add(new production_proccess("Quality Control not started", "quality_check"));
-			names.add(new production_proccess("Packaging", "packaging"));
-			names.add(new production_proccess("Shipping", "shipped"));
+        currentEmployee = new Employee("1", "Luuk Hermans");
 
-			adapter = new production_proccess_list_adapter(this, names);
-			ListView lv = (ListView) findViewById(R.id.production_proccess);
-			lv.setAdapter(adapter);
+        try {
+            Database.initializeInstance();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
 
-			ImageView checkIn = (ImageView) findViewById(R.id.check_in_status);
-			checkIn.setOnClickListener(new View.OnClickListener()
-			{
-				@Override
-				public void onClick(View v)
-				{
-					Intent intent = new Intent(MainActivity.this, nfcActivity.class);
-					startActivity(intent);
-				}
-			});
+        List<Phase> phases = new ArrayList<>();
+        phases.add(new Phase("1", "Prepairing"));
+        phases.add(new Phase("2", "Printing"));
+        phases.add(new Phase("3", "Quality control"));
 
-			// Deze is temporary om naar de userList te gaan.
-			ImageView checkIn2 = (ImageView) findViewById(R.id.profile_image);
-			checkIn2.setOnClickListener(new View.OnClickListener()
-			{
-				@Override
-				public void onClick(View v)
-				{
-					Intent intent = new Intent(MainActivity.this, userProcessListActivity.class);
-					startActivity(intent);
-				}
-			});
-		}
-		catch(Exception ex)
-		{
-			ex.printStackTrace();
-		}
+        adapter = new production_proccess_list_adapter(this, phases);
+        ListView lv = (ListView) findViewById(R.id.production_proccess);
+        lv.setAdapter(adapter);
 
-		setContentView(R.layout.activity_main);
-	}
+        TextView employeeName = (TextView) findViewById(R.id.profile_name);
+        employeeName.setText(currentEmployee.getName());
 
-	@Override
-	protected void onDestroy()
-	{
-		super.onDestroy();
+        ImageView checkIn = (ImageView) findViewById(R.id.check_in_status);
+        checkIn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, nfcActivity.class);
+                startActivity(intent);
+            }
+        });
 
-		try
-		{
-			Database.deInitializeInstance();
-		}
-		catch(Exception ex)
-		{
-			ex.printStackTrace();
-		}
-	}
+        // Deze is temporary om naar de userList te gaan.
+        ImageView checkIn2 = (ImageView) findViewById(R.id.profile_image);
+        checkIn2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, userProcessListActivity.class);
+                startActivity(intent);
+            }
+        });
+        instance = this;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        try {
+            Database.deInitializeInstance();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public static MainActivity getInstance() {
+        return instance;
+    }
+
+    public void setCurrentPhase(Phase p) {
+        currentEmployee.setPhaseId(p.getId());
+
+        ImageView status = (ImageView) findViewById(R.id.check_in_status);
+        status.setImageResource(R.drawable.checkedinbtn);
+    }
 }
