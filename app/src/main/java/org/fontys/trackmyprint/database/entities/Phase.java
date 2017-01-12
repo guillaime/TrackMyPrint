@@ -11,7 +11,7 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public final class Phase extends Entity
 {
-	private final String phaseId;
+	private final String id;
 	private final String name;
 	private final ReentrantLock lock;
 
@@ -19,21 +19,21 @@ public final class Phase extends Entity
 	{
 		super(EntityType.PHASE);
 
-		this.phaseId  = null;
+		this.id = null;
 		this.name = null;
 		this.lock = new ReentrantLock();
 	}
 
-	public Phase(String phaseId, String name)
+	public Phase(String id, String name)
 			throws
 			IllegalArgumentException
 	{
 		super(EntityType.PHASE);
 
-		Throw.ifNull(IllegalArgumentException.class, phaseId, "phaseId");
+		Throw.ifNull(IllegalArgumentException.class, id, "id");
 		Throw.ifNull(IllegalArgumentException.class, name, "name");
 
-		this.phaseId = phaseId;
+		this.id = id;
 		this.name = name;
 		this.lock = new ReentrantLock();
 	}
@@ -41,7 +41,7 @@ public final class Phase extends Entity
 	@Override
 	public int hashCode()
 	{
-		return 31 * this.phaseId.hashCode();
+		return 31 * this.id.hashCode();
 	}
 
 	@Override
@@ -58,7 +58,7 @@ public final class Phase extends Entity
 	@Override
 	public String getId()
 	{
-		return this.phaseId;
+		return this.id;
 	}
 
 	public String getName()

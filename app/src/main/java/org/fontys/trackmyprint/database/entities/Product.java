@@ -14,7 +14,7 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public final class Product extends Entity
 {
-	private final String productId;
+	private final String id;
 	private final String name;
 	private final String image;
 	private final String description;
@@ -27,7 +27,7 @@ public final class Product extends Entity
 	{
 		super(EntityType.PRODUCT);
 
-		this.productId = null;
+		this.id = null;
 		this.name = null;
 		this.image = null;
 		this.description = null;
@@ -37,20 +37,20 @@ public final class Product extends Entity
 		this.lock = new ReentrantLock();
 	}
 
-	public Product(String productId, String name, String image, String description, int amount, String orderId, List<String> productPhaseIds)
+	public Product(String id, String name, String image, String description, int amount, String orderId, List<String> productPhaseIds)
 			throws
 			IllegalArgumentException
 	{
 		super(EntityType.PRODUCT);
 
-		Throw.ifNull(IllegalArgumentException.class, productId, "productId");
+		Throw.ifNull(IllegalArgumentException.class, id, "id");
 		Throw.ifNull(IllegalArgumentException.class, name, "name");
 		Throw.ifNull(IllegalArgumentException.class, image, "image");
 		Throw.ifNull(IllegalArgumentException.class, description, "description");
 		Throw.ifNull(IllegalArgumentException.class, orderId, "orderId");
 		Throw.ifOutOfRangeInMin(IllegalArgumentException.class, amount, "amount", 0);
 
-		this.productId = productId;
+		this.id = id;
 		this.name = name;
 		this.image = image;
 		this.description = description;
@@ -71,17 +71,17 @@ public final class Product extends Entity
 		}
 	}
 
-	public Product(String productId, String name, String image, String description, int amount, String orderId)
+	public Product(String id, String name, String image, String description, int amount, String orderId)
 		throws
 		IllegalArgumentException
 	{
-		this(productId, name, image, description, amount, orderId, null);
+		this(id, name, image, description, amount, orderId, null);
 	}
 
 	@Override
 	public int hashCode()
 	{
-		return 31 * this.productId.hashCode();
+		return 31 * this.id.hashCode();
 	}
 
 	@Override
@@ -158,7 +158,7 @@ public final class Product extends Entity
 	@Override
 	public String getId()
 	{
-		return this.productId;
+		return this.id;
 	}
 
 	public String getName()

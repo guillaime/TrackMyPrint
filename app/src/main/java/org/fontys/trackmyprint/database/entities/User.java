@@ -14,7 +14,7 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public final class User extends Entity
 {
-	private final String userId;
+	private final String id;
 	private final List<String> orderIds;
 	private final ReentrantLock lock;
 
@@ -22,20 +22,20 @@ public final class User extends Entity
 	{
 		super(EntityType.USER);
 
-		this.userId = null;
+		this.id = null;
 		this.orderIds = null;
 		this.lock = new ReentrantLock();
 	}
 
-	public User(String userId, List<String> orderIds)
+	public User(String id, List<String> orderIds)
 			throws
 			IllegalArgumentException
 	{
 		super(EntityType.USER);
 
-		Throw.ifNull(IllegalArgumentException.class, userId, "userId");
+		Throw.ifNull(IllegalArgumentException.class, id, "id");
 
-		this.userId = userId;
+		this.id = id;
 		this.orderIds = new ArrayList<>();
 		this.lock = new ReentrantLock();
 
@@ -51,17 +51,17 @@ public final class User extends Entity
 		}
 	}
 
-	public User(String userId)
+	public User(String id)
 		throws
 		IllegalArgumentException
 	{
-		this(userId, null);
+		this(id, null);
 	}
 
 	@Override
 	public int hashCode()
 	{
-		return (31 * this.userId.hashCode());
+		return (31 * this.id.hashCode());
 	}
 
 	@Override
@@ -136,7 +136,7 @@ public final class User extends Entity
 	@Override
 	public String getId()
 	{
-		return this.userId;
+		return this.id;
 	}
 
 	public List<String> getOrderIds()
