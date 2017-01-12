@@ -18,7 +18,7 @@ import java.util.List;
 
 public class production_proccess_list_adapter extends ArrayAdapter<Phase> {
 
-    public production_proccess_list_adapter(Context context, List<Phase> phases){
+    public production_proccess_list_adapter(Context context, List<Phase> phases) {
         super(context, R.layout.production_proccess_item, phases);
     }
 
@@ -32,18 +32,25 @@ public class production_proccess_list_adapter extends ArrayAdapter<Phase> {
         title.setText(pp.getName());
 
         final ImageButton checkIn = (ImageButton) cv.findViewById(R.id.imageButtonCheck);
-        checkIn.setOnClickListener(new View.OnClickListener()
-        {
+        checkIn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
-                MainActivity.getInstance().setCurrentPhase(pp);
-                checkIn.setImageResource(R.drawable.icon_user_vink);
+            public void onClick(View v) {
+                if (MainActivity.getInstance().getCurrentPhase() != pp) {
+                    MainActivity.getInstance().setCurrentPhase(pp);
+                    checkIn.setImageResource(R.drawable.icon_user_vink);
+                } else {
+                    MainActivity.getInstance().setCurrentPhase(new Phase("100", ""));
+                    checkIn.setImageResource(R.drawable.checkinbtn);
+                }
             }
+
         });
+        if (MainActivity.getInstance().getCurrentPhase() != pp) {
+            checkIn.setImageResource(R.drawable.checkinbtn);
+        } else {
+            checkIn.setImageResource(R.drawable.icon_user_vink);
+        }
         return cv;
     }
-
-
 
 }

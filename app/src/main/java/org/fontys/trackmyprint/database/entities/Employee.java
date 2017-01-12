@@ -13,6 +13,8 @@ public final class Employee extends Entity
 {
 	private final String employeeId;
 	private String phaseId;
+	private Phase phase;
+
 	private final String name;
 	private final ReentrantLock lock;
 
@@ -71,17 +73,17 @@ public final class Employee extends Entity
 		return this.employeeId;
 	}
 
-	public String getPhaseId()
+	public Phase getPhase()
 	{
-		return this.phaseId;
+		return this.phase;
 	}
 
-	public void setPhaseId(String phaseId)
+	public void setPhase(Phase phase)
 	{
 		this.lock.lock();
 		try
 		{
-			this.phaseId = phaseId;
+			this.phase = phase;
 		}
 		finally
 		{
