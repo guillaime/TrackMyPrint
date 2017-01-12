@@ -1,6 +1,5 @@
 package com.example.tmp.trackmyprint;
 
-import android.os.Bundle;
 import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.Intent;
@@ -11,9 +10,13 @@ import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.nfc.tech.Ndef;
 import android.os.AsyncTask;
+import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 
@@ -22,9 +25,8 @@ import java.util.Arrays;
  * Activity for reading data from an NDEF Tag.
  *
  * @author Ralf Wondratschek
- *
  */
-public class nfcActivity extends Activity {
+public class nfcActivity extends AppCompatActivity {
 
     public static final String MIME_TEXT_PLAIN = "text/plain";
     public static final String TAG = "NfcDemo";
@@ -93,6 +95,7 @@ public class nfcActivity extends Activity {
 
     private void handleIntent(Intent intent) {
         String action = intent.getAction();
+        boolean scanned = false;
         if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(action)) {
 
             Toast.makeText(this, "NDEF", Toast.LENGTH_LONG).show();
@@ -101,7 +104,7 @@ public class nfcActivity extends Activity {
 
                 Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
                 new NdefReaderTask().execute(tag);
-
+                scanned = true;
             } else {
                 Log.d(TAG, "Wrong mime type: " + type);
             }
@@ -118,13 +121,31 @@ public class nfcActivity extends Activity {
                     break;
                 }
             }
+            scanned = true;
         }
+        setButton(scanned);
+
+
     }
 
     /**
      * @param activity The corresponding {@link Activity} requesting the foreground dispatch.
      * @param adapter  The {@link NfcAdapter} used for the foreground dispatch.
      */
+
+    public void setButton(boolean scanned) {
+        TextView lblDetails = (TextView) findViewById(R.id.lblViewDetails);
+        ImageButton btnDetails = (ImageButton) findViewById(R.id.btnDetails);
+
+        if (scanned) {
+            btnDetails.setImageResource(R.color.colorScanButton);
+            lblDetails.setText("View " + MainActivity.getInstance().getCurrentPhase().getName() + " details");
+        } else {
+            btnDetails.setImageResource(R.color.colorProfileRectangle);
+            lblDetails.setText("No details available");
+        }
+    }
+
     public static void setupForegroundDispatch(final Activity activity, NfcAdapter adapter) {
         final Intent intent = new Intent(activity.getApplicationContext(), activity.getClass());
         intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
