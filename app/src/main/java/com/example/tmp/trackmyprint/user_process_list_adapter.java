@@ -36,7 +36,6 @@ public class user_process_list_adapter extends ArrayAdapter<production_proccess>
             LayoutInflater i = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             cv = i.inflate(R.layout.user_process_item, null);
         }
-
         TextView title = (TextView) cv.findViewById(R.id.production_proccess_title);
         title.setText(pp.name);
         return cv;

@@ -17,7 +17,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_margin="0dp"
-        app:layout_constraintHorizontal_bias="0.0" />
+        app:layout_constraintHorizontal_bias="1.0" />
 
     <TextView
         android:text="Please leave your phone in the dock if you’ve started the product proccess."
@@ -34,7 +34,8 @@
         android:layout_marginEnd="24dp"
         android:layout_marginRight="24dp"
         android:textAlignment="center"
-        android:textSize="14dp" />
+        android:textSize="14dp"
+        app:layout_constraintHorizontal_bias="0.45" />
 
     <ImageView
         android:layout_width="201dp"
@@ -52,18 +53,29 @@
         app:layout_constraintVertical_bias="0.38" />
 
     <ImageButton
-        app:srcCompat="@drawable/startbutton"
-        android:id="@+id/startBtn"
+        app:srcCompat="@color/colorProfileRectangle"
+        android:id="@+id/btnDetails"
         android:minWidth="0dp"
         android:minHeight="0dp"
         android:scaleType="centerInside"
         android:background="@android:color/transparent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        android:layout_height="43dp"
         app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_width="360dp"
-        app:layout_constraintHorizontal_bias="0.0" />
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_width="0dp"
+        android:layout_height="50dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/lblViewDetails"
+        android:textColor="@color/cardview_light_background"
+        app:layout_constraintVertical_bias="0.52"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="@+id/btnDetails"
+        app:layout_constraintTop_toTopOf="@+id/btnDetails"
+        app:layout_constraintBottom_toBottomOf="@+id/btnDetails"
+        android:text="No details available" />
 
     <TextView
         android:text="Waiting for start..."
