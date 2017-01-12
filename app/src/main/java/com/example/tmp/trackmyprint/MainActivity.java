@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -20,12 +21,16 @@ public class MainActivity extends AppCompatActivity {
 
     private production_proccess_list_adapter adapter;
 
+    private ImageButton btnScan;
+
     private static MainActivity instance;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        btnScan = (ImageButton) findViewById(R.id.btnScan);
 
         currentEmployee = new Employee("1", "Luuk Hermans");
 
@@ -35,10 +40,10 @@ public class MainActivity extends AppCompatActivity {
             ex.printStackTrace();
         }
 
+
         List<Phase> phases = new ArrayList<>();
-        phases.add(new Phase("1", "Prepairing"));
-        phases.add(new Phase("2", "Printing"));
-        phases.add(new Phase("3", "Quality control"));
+
+        phases.addAll(Database.getInstance().getPhases().values());
 
         adapter = new production_proccess_list_adapter(this, phases);
         ListView lv = (ListView) findViewById(R.id.production_proccess);
@@ -48,23 +53,10 @@ public class MainActivity extends AppCompatActivity {
         employeeName.setText(currentEmployee.getName());
 
         ImageView checkIn = (ImageView) findViewById(R.id.check_in_status);
-        checkIn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, nfcActivity.class);
-                startActivity(intent);
-            }
-        });
 
         // Deze is temporary om naar de userList te gaan.
         ImageView checkIn2 = (ImageView) findViewById(R.id.profile_image);
-        checkIn2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, userProcessListActivity.class);
-                startActivity(intent);
-            }
-        });
+
         instance = this;
     }
 
@@ -84,9 +76,31 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void setCurrentPhase(Phase p) {
-        currentEmployee.setPhaseId(p.getId());
-
+        currentEmployee.setPhase(p);
         ImageView status = (ImageView) findViewById(R.id.check_in_status);
-        status.setImageResource(R.drawable.checkedinbtn);
+        TextView lblScan = (TextView) findViewById(R.id.lblScan);
+
+        if (p.getId() == "100") {
+            status.setImageResource(R.drawable.checkin_status);
+            lblScan.setText("Please check in to a sector");
+            btnScan.setImageResource(R.color.colorProfileRectangle);
+        } else {
+            status.setImageResource(R.drawable.checkedinbtn);
+            lblScan.setText("Scan a product");
+            btnScan.setImageResource(R.color.colorScanButton);
+
+            btnScan.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(MainActivity.this, nfcActivity.class);
+                    startActivity(intent);
+                }
+            });
+        }
+        adapter.notifyDataSetChanged();
+    }
+
+    public Phase getCurrentPhase() {
+        return currentEmployee.getPhase();
     }
 }

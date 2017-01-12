@@ -22,7 +22,7 @@
     <ImageView
         android:layout_width="50dp"
         android:layout_height="50dp"
-        app:srcCompat="@drawable/farshad_icon"
+        app:srcCompat="@drawable/profileimage"
         android:id="@+id/profile_image"
         app:layout_constraintBottom_toBottomOf="@+id/top"
         app:layout_constraintTop_toTopOf="@+id/top"

@@ -4,4 +4,6 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
     <color name="colorProfileRectangle">#225378</color>
+    <color name="colorScanButton">#1695A3</color>
+    <color name="colorStatus">#EB7F00</color>
 </resources>
