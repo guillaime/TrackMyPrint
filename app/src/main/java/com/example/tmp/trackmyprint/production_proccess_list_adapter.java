@@ -39,7 +39,7 @@ public class production_proccess_list_adapter extends ArrayAdapter<Phase> {
                     MainActivity.getInstance().setCurrentPhase(pp);
                     checkIn.setImageResource(R.drawable.icon_user_vink);
                 } else {
-                    MainActivity.getInstance().setCurrentPhase(new Phase("100", ""));
+                    MainActivity.getInstance().setCurrentPhase(null);
                     checkIn.setImageResource(R.drawable.checkinbtn);
                 }
             }

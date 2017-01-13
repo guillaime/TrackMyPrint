@@ -1,6 +1,10 @@
 package org.fontys.trackmyprint.database;
 
+import android.content.Context;
+import android.widget.ImageView;
+
 import org.fontys.trackmyprint.database.entities.Employee;
+import org.fontys.trackmyprint.database.entities.Entity;
 import org.fontys.trackmyprint.database.entities.Order;
 import org.fontys.trackmyprint.database.entities.Phase;
 import org.fontys.trackmyprint.database.entities.Product;
@@ -323,6 +327,16 @@ public final class Database implements DatabaseImpl
 	public void removeDatabaseListener(DatabaseListener databaseListener)
 	{
 		this.databaseImpl.removeDatabaseListener(databaseListener);
+	}
+
+	@Override
+	public <T extends Entity> void downloadImage(Class<T> tClass, String id, Context context,
+												 ImageView imageView)
+			throws
+			IllegalArgumentException,
+			DatabaseException
+	{
+		this.databaseImpl.downloadImage(tClass, id, context, imageView);
 	}
 
 	public static void initializeInstance()
