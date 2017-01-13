@@ -41,7 +41,6 @@ public final class ProductPhase extends Entity
 		}
 	}
 
-	private final String id;
 	private String startDate;
 	private String endDate;
 	private ProductPhaseStatus productPhaseStatus;
@@ -53,7 +52,6 @@ public final class ProductPhase extends Entity
 	{
 		super(EntityType.PRODUCT_PHASE);
 
-		this.id = null;
 		this.startDate = null;
 		this.endDate = null;
 		this.productPhaseStatus = ProductPhaseStatus.NONE;
@@ -66,13 +64,11 @@ public final class ProductPhase extends Entity
 		throws
 		IllegalArgumentException
 	{
-		super(EntityType.PRODUCT_PHASE);
+		super(EntityType.PRODUCT_PHASE, id);
 
-		Throw.ifNull(IllegalArgumentException.class, id, "id");
 		Throw.ifNull(IllegalArgumentException.class, employeeId, "employeeId");
 		Throw.ifNull(IllegalArgumentException.class, phaseId, "phaseId");
 
-		this.id = id;
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.productPhaseStatus = productPhaseStatus;
@@ -86,29 +82,6 @@ public final class ProductPhase extends Entity
 			IllegalArgumentException
 	{
 		this(id, null, null, ProductPhaseStatus.NONE, employeeId, phaseId);
-	}
-
-	@Override
-	public int hashCode()
-	{
-		return 31 * this.id.hashCode();
-	}
-
-	@Override
-	public boolean equals(Object obj)
-	{
-		if(obj == null)
-		{
-			return false;
-		}
-
-		return (hashCode() == obj.hashCode());
-	}
-
-	@Override
-	public String getId()
-	{
-		return this.id;
 	}
 
 	public String getStartDate()

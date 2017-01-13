@@ -14,7 +14,6 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public final class Product extends Entity
 {
-	private final String id;
 	private final String name;
 	private final String image;
 	private final String description;
@@ -27,7 +26,6 @@ public final class Product extends Entity
 	{
 		super(EntityType.PRODUCT);
 
-		this.id = null;
 		this.name = null;
 		this.image = null;
 		this.description = null;
@@ -41,16 +39,14 @@ public final class Product extends Entity
 			throws
 			IllegalArgumentException
 	{
-		super(EntityType.PRODUCT);
+		super(EntityType.PRODUCT, id);
 
-		Throw.ifNull(IllegalArgumentException.class, id, "id");
 		Throw.ifNull(IllegalArgumentException.class, name, "name");
 		Throw.ifNull(IllegalArgumentException.class, image, "image");
 		Throw.ifNull(IllegalArgumentException.class, description, "description");
 		Throw.ifNull(IllegalArgumentException.class, orderId, "orderId");
 		Throw.ifOutOfRangeInMin(IllegalArgumentException.class, amount, "amount", 0);
 
-		this.id = id;
 		this.name = name;
 		this.image = image;
 		this.description = description;
@@ -76,23 +72,6 @@ public final class Product extends Entity
 		IllegalArgumentException
 	{
 		this(id, name, image, description, amount, orderId, null);
-	}
-
-	@Override
-	public int hashCode()
-	{
-		return 31 * this.id.hashCode();
-	}
-
-	@Override
-	public boolean equals(Object obj)
-	{
-		if(obj == null)
-		{
-			return false;
-		}
-
-		return (hashCode() == obj.hashCode());
 	}
 
 	public boolean addProductPhaseId(String productPhaseId)
@@ -153,12 +132,6 @@ public final class Product extends Entity
 		{
 			this.lock.unlock();
 		}
-	}
-
-	@Override
-	public String getId()
-	{
-		return this.id;
 	}
 
 	public String getName()

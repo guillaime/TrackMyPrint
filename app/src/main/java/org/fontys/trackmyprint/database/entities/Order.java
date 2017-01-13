@@ -44,7 +44,6 @@ public final class Order extends Entity
 		}
 	}
 
-	private final String id;
 	private final String userId;
 	private OrderStatus orderStatus;
 	private final String orderDate;
@@ -55,7 +54,6 @@ public final class Order extends Entity
 	{
 		super(EntityType.ORDER);
 
-		this.id = null;
 		this.userId = null;
 		this.orderStatus = OrderStatus.NONE;
 		this.orderDate = null;
@@ -67,13 +65,11 @@ public final class Order extends Entity
 		throws
 		IllegalArgumentException
 	{
-		super(EntityType.ORDER);
+		super(EntityType.ORDER, id);
 
-		Throw.ifNull(IllegalArgumentException.class, id, "id");
 		Throw.ifNull(IllegalArgumentException.class, userId, "userId");
 		Throw.ifNull(IllegalArgumentException.class, orderDate, "orderDate");
 
-		this.id = id;
 		this.userId = userId;
 		this.orderStatus = orderStatus;
 		this.orderDate = orderDate;
@@ -111,23 +107,6 @@ public final class Order extends Entity
 			IllegalArgumentException
 	{
 		this(id, userId, OrderStatus.NONE, orderDate, null);
-	}
-
-	@Override
-	public int hashCode()
-	{
-		return 31 * this.id.hashCode();
-	}
-
-	@Override
-	public boolean equals(Object obj)
-	{
-		if(obj == null)
-		{
-			return false;
-		}
-
-		return (hashCode() == obj.hashCode());
 	}
 
 	public boolean addProductId(String productId)
@@ -186,12 +165,6 @@ public final class Order extends Entity
 		{
 			this.lock.unlock();
 		}
-	}
-
-	@Override
-	public String getId()
-	{
-		return this.id;
 	}
 
 	public String getUserId()
