@@ -123,8 +123,10 @@ public class MainActivity extends AppCompatActivity implements DatabaseListener
 				@Override
 				public void onClick(View v)
 				{
-					Intent intent = new Intent(MainActivity.this, nfcActivity.class);
-					startActivity(intent);
+					if(getCurrentPhase()!= null){
+						Intent intent = new Intent(MainActivity.this, nfcActivity.class);
+						startActivity(intent);
+					}
 				}
 			});
 		}
