@@ -44,7 +44,6 @@ public final class Order extends Entity
 		}
 	}
 
-	private final String orderId;
 	private final String userId;
 	private OrderStatus orderStatus;
 	private final String orderDate;
@@ -55,7 +54,6 @@ public final class Order extends Entity
 	{
 		super(EntityType.ORDER);
 
-		this.orderId = null;
 		this.userId = null;
 		this.orderStatus = OrderStatus.NONE;
 		this.orderDate = null;
@@ -63,17 +61,15 @@ public final class Order extends Entity
 		this.lock = new ReentrantLock();
 	}
 
-	public Order(String orderId, String userId, OrderStatus orderStatus, String orderDate, List<String> productIds)
+	public Order(String id, String userId, OrderStatus orderStatus, String orderDate, List<String> productIds)
 		throws
 		IllegalArgumentException
 	{
-		super(EntityType.ORDER);
+		super(EntityType.ORDER, id);
 
-		Throw.ifNull(IllegalArgumentException.class, orderId, "orderId");
 		Throw.ifNull(IllegalArgumentException.class, userId, "userId");
 		Throw.ifNull(IllegalArgumentException.class, orderDate, "orderDate");
 
-		this.orderId = orderId;
 		this.userId = userId;
 		this.orderStatus = orderStatus;
 		this.orderDate = orderDate;
@@ -92,42 +88,25 @@ public final class Order extends Entity
 		}
 	}
 
-	public Order(String orderId, String userId, OrderStatus orderStatus, String orderDate)
+	public Order(String id, String userId, OrderStatus orderStatus, String orderDate)
 			throws
 			IllegalArgumentException
 	{
-		this(orderId, userId, orderStatus, orderDate, null);
+		this(id, userId, orderStatus, orderDate, null);
 	}
 
-	public Order(String orderId, String userId, String orderDate, List<String> productIds)
+	public Order(String id, String userId, String orderDate, List<String> productIds)
 			throws
 			IllegalArgumentException
 	{
-		this(orderId, userId, OrderStatus.NONE, orderDate, productIds);
+		this(id, userId, OrderStatus.NONE, orderDate, productIds);
 	}
 
-	public Order(String orderId, String userId, String orderDate)
+	public Order(String id, String userId, String orderDate)
 			throws
 			IllegalArgumentException
 	{
-		this(orderId, userId, OrderStatus.NONE, orderDate, null);
-	}
-
-	@Override
-	public int hashCode()
-	{
-		return 31 * this.orderId.hashCode();
-	}
-
-	@Override
-	public boolean equals(Object obj)
-	{
-		if(obj == null)
-		{
-			return false;
-		}
-
-		return (hashCode() == obj.hashCode());
+		this(id, userId, OrderStatus.NONE, orderDate, null);
 	}
 
 	public boolean addProductId(String productId)
@@ -186,12 +165,6 @@ public final class Order extends Entity
 		{
 			this.lock.unlock();
 		}
-	}
-
-	@Override
-	public String getId()
-	{
-		return this.orderId;
 	}
 
 	public String getUserId()

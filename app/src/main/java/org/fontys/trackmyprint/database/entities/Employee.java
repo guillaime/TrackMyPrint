@@ -11,10 +11,7 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public final class Employee extends Entity
 {
-	private final String employeeId;
 	private String phaseId;
-	private Phase phase;
-
 	private final String name;
 	private final ReentrantLock lock;
 
@@ -22,68 +19,50 @@ public final class Employee extends Entity
 	{
 		super(EntityType.EMPLOYEE);
 
-		this.employeeId = null;
 		this.phaseId = null;
 		this.name = null;
 		this.lock = new ReentrantLock();
 	}
 
-	public Employee(String employeeId, String phaseId, String name)
+	public Employee(String id, String phaseId, String name)
 			throws
 			IllegalArgumentException
 	{
-		super(EntityType.EMPLOYEE);
+		super(EntityType.EMPLOYEE, id);
 
-		Throw.ifNull(IllegalArgumentException.class, employeeId, "employeeId");
 		Throw.ifNull(IllegalArgumentException.class, name, "name");
 
-		this.employeeId = employeeId;
 		this.phaseId = phaseId;
 		this.name = name;
 		this.lock = new ReentrantLock();
 	}
 
-	public Employee(String employeeId, String name)
+	public Employee(String id, String name)
 		throws
 		IllegalArgumentException
 	{
-		this(employeeId, null, name);
+		this(id, null, name);
 	}
 
-	@Override
-	public int hashCode()
-	{
-		return 31 * this.employeeId.hashCode();
-	}
-
-	@Override
-	public boolean equals(Object obj)
-	{
-		if(obj == null)
-		{
-			return false;
-		}
-
-		return (hashCode() == obj.hashCode());
-	}
-
-	@Override
-	public String getId()
-	{
-		return this.employeeId;
-	}
-
-	public Phase getPhase()
-	{
-		return this.phase;
-	}
-
-	public void setPhase(Phase phase)
+	public String getPhaseId()
 	{
 		this.lock.lock();
 		try
 		{
-			this.phase = phase;
+			return this.phaseId;
+		}
+		finally
+		{
+			this.lock.unlock();
+		}
+	}
+
+	public void setPhaseId(String phaseId)
+	{
+		this.lock.lock();
+		try
+		{
+			this.phaseId = phaseId;
 		}
 		finally
 		{

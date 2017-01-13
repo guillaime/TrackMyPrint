@@ -14,7 +14,6 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public final class Product extends Entity
 {
-	private final String productId;
 	private final String name;
 	private final String image;
 	private final String description;
@@ -27,7 +26,6 @@ public final class Product extends Entity
 	{
 		super(EntityType.PRODUCT);
 
-		this.productId = null;
 		this.name = null;
 		this.image = null;
 		this.description = null;
@@ -37,20 +35,18 @@ public final class Product extends Entity
 		this.lock = new ReentrantLock();
 	}
 
-	public Product(String productId, String name, String image, String description, int amount, String orderId, List<String> productPhaseIds)
+	public Product(String id, String name, String image, String description, int amount, String orderId, List<String> productPhaseIds)
 			throws
 			IllegalArgumentException
 	{
-		super(EntityType.PRODUCT);
+		super(EntityType.PRODUCT, id);
 
-		Throw.ifNull(IllegalArgumentException.class, productId, "productId");
 		Throw.ifNull(IllegalArgumentException.class, name, "name");
 		Throw.ifNull(IllegalArgumentException.class, image, "image");
 		Throw.ifNull(IllegalArgumentException.class, description, "description");
 		Throw.ifNull(IllegalArgumentException.class, orderId, "orderId");
 		Throw.ifOutOfRangeInMin(IllegalArgumentException.class, amount, "amount", 0);
 
-		this.productId = productId;
 		this.name = name;
 		this.image = image;
 		this.description = description;
@@ -71,28 +67,11 @@ public final class Product extends Entity
 		}
 	}
 
-	public Product(String productId, String name, String image, String description, int amount, String orderId)
+	public Product(String id, String name, String image, String description, int amount, String orderId)
 		throws
 		IllegalArgumentException
 	{
-		this(productId, name, image, description, amount, orderId, null);
-	}
-
-	@Override
-	public int hashCode()
-	{
-		return 31 * this.productId.hashCode();
-	}
-
-	@Override
-	public boolean equals(Object obj)
-	{
-		if(obj == null)
-		{
-			return false;
-		}
-
-		return (hashCode() == obj.hashCode());
+		this(id, name, image, description, amount, orderId, null);
 	}
 
 	public boolean addProductPhaseId(String productPhaseId)
@@ -153,12 +132,6 @@ public final class Product extends Entity
 		{
 			this.lock.unlock();
 		}
-	}
-
-	@Override
-	public String getId()
-	{
-		return this.productId;
 	}
 
 	public String getName()

@@ -41,7 +41,6 @@ public final class ProductPhase extends Entity
 		}
 	}
 
-	private final String productPhaseId;
 	private String startDate;
 	private String endDate;
 	private ProductPhaseStatus productPhaseStatus;
@@ -53,7 +52,6 @@ public final class ProductPhase extends Entity
 	{
 		super(EntityType.PRODUCT_PHASE);
 
-		this.productPhaseId = null;
 		this.startDate = null;
 		this.endDate = null;
 		this.productPhaseStatus = ProductPhaseStatus.NONE;
@@ -62,17 +60,15 @@ public final class ProductPhase extends Entity
 		this.lock = new ReentrantLock();
 	}
 
-	public ProductPhase(String productPhaseId, String startDate, String endDate, ProductPhaseStatus productPhaseStatus, String employeeId, String phaseId)
+	public ProductPhase(String id, String startDate, String endDate, ProductPhaseStatus productPhaseStatus, String employeeId, String phaseId)
 		throws
 		IllegalArgumentException
 	{
-		super(EntityType.PRODUCT_PHASE);
+		super(EntityType.PRODUCT_PHASE, id);
 
-		Throw.ifNull(IllegalArgumentException.class, productPhaseId, "productPhaseId");
 		Throw.ifNull(IllegalArgumentException.class, employeeId, "employeeId");
 		Throw.ifNull(IllegalArgumentException.class, phaseId, "phaseId");
 
-		this.productPhaseId = productPhaseId;
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.productPhaseStatus = productPhaseStatus;
@@ -81,34 +77,11 @@ public final class ProductPhase extends Entity
 		this.lock = new ReentrantLock();
 	}
 
-	public ProductPhase(String productPhaseId, String employeeId, String phaseId)
+	public ProductPhase(String id, String employeeId, String phaseId)
 			throws
 			IllegalArgumentException
 	{
-		this(productPhaseId, null, null, ProductPhaseStatus.NONE, employeeId, phaseId);
-	}
-
-	@Override
-	public int hashCode()
-	{
-		return 31 * this.productPhaseId.hashCode();
-	}
-
-	@Override
-	public boolean equals(Object obj)
-	{
-		if(obj == null)
-		{
-			return false;
-		}
-
-		return (hashCode() == obj.hashCode());
-	}
-
-	@Override
-	public String getId()
-	{
-		return this.productPhaseId;
+		this(id, null, null, ProductPhaseStatus.NONE, employeeId, phaseId);
 	}
 
 	public String getStartDate()
