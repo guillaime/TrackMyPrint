@@ -10,6 +10,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import org.fontys.trackmyprint.database.Database;
+import org.fontys.trackmyprint.database.DatabaseException;
 import org.fontys.trackmyprint.database.DatabaseListener;
 import org.fontys.trackmyprint.database.entities.Employee;
 import org.fontys.trackmyprint.database.entities.Order;
@@ -17,6 +18,7 @@ import org.fontys.trackmyprint.database.entities.Phase;
 import org.fontys.trackmyprint.database.entities.Product;
 import org.fontys.trackmyprint.database.entities.ProductPhase;
 import org.fontys.trackmyprint.database.entities.User;
+import org.fontys.trackmyprint.utils.Phone;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,11 +38,10 @@ public class MainActivity extends AppCompatActivity implements DatabaseListener
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
+
 		setContentView(R.layout.activity_main);
 
 		btnScan = (ImageButton) findViewById(R.id.btnScan);
-
-		currentEmployee = new Employee("1", "Luuk Hermans");
 
 		try
 		{
@@ -53,9 +54,6 @@ public class MainActivity extends AppCompatActivity implements DatabaseListener
 
 			ex.printStackTrace();
 		}
-
-		TextView employeeName = (TextView) findViewById(R.id.profile_name);
-		employeeName.setText(currentEmployee.getName());
 
 		ImageView checkIn = (ImageView) findViewById(R.id.check_in_status);
 
@@ -72,6 +70,8 @@ public class MainActivity extends AppCompatActivity implements DatabaseListener
 
 		try
 		{
+			Database.getInstance().removeDatabaseListener(this);
+
 			Database.deInitializeInstance();
 		}
 		catch(Exception ex)
@@ -88,13 +88,20 @@ public class MainActivity extends AppCompatActivity implements DatabaseListener
 	public void setCurrentPhase(Phase p)
 	{
 		this.currentEmployee.setPhaseId(p == null ? null : p.getId());
-		// update in database
 
+		try
+		{
+			Database.getInstance().update(this.currentEmployee);
+		}
+		catch(DatabaseException e)
+		{
+			e.printStackTrace();
+		}
 
 		ImageView status = (ImageView) findViewById(R.id.check_in_status);
 		TextView lblScan = (TextView) findViewById(R.id.lblScan);
 
-		if(p.getId() == "100")
+		if(p == null)
 		{
 			status.setImageResource(R.drawable.checkin_status);
 			lblScan.setText("Please check in to a sector");
@@ -127,7 +134,22 @@ public class MainActivity extends AppCompatActivity implements DatabaseListener
 	@Override
 	public void onEmployeesInitialized(Map<String, Employee> employees)
 	{
+		this.currentEmployee = employees.get(Phone.getIMEI(getApplicationContext()));
 
+		TextView employeeName = (TextView) findViewById(R.id.profile_name);
+		employeeName.setText(this.currentEmployee.getName());
+
+		ImageView employeeImage = (ImageView) findViewById(R.id.profile_image);
+
+		try
+		{
+			Database.getInstance().downloadImage(Employee.class, this.currentEmployee.getId(),
+												 getApplicationContext(), employeeImage);
+		}
+		catch(DatabaseException ex)
+		{
+			ex.printStackTrace();
+		}
 	}
 
 	@Override

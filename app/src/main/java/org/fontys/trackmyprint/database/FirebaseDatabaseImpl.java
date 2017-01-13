@@ -1,11 +1,18 @@
 package org.fontys.trackmyprint.database;
 
+import android.content.Context;
+import android.widget.ImageView;
+
+import com.bumptech.glide.Glide;
+import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import org.fontys.trackmyprint.database.entities.Employee;
 import org.fontys.trackmyprint.database.entities.Entity;
@@ -33,6 +40,8 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public final class FirebaseDatabaseImpl implements DatabaseImpl
 {
+	private static final String IMAGE_EXTENSION = ".png";
+
 	private final class EntityInitializer<T extends Entity> implements ValueEventListener
 	{
 		private final Class<T> tClass;
@@ -67,7 +76,9 @@ public final class FirebaseDatabaseImpl implements DatabaseImpl
 
 				for(DatabaseListener databaseListener : this.databaseListeners)
 				{
-					this.databaseInitializedTrigger.trigger(databaseListener, Collections.unmodifiableMap(this.dataMap));
+					this.databaseInitializedTrigger.trigger(databaseListener,
+															Collections.unmodifiableMap(
+																	this.dataMap));
 				}
 			}
 			finally
@@ -285,6 +296,7 @@ public final class FirebaseDatabaseImpl implements DatabaseImpl
 	private boolean initialized;
 	private volatile boolean deInitialized;
 	private FirebaseDatabase fBase;
+	private FirebaseStorage fStorage;
 	private DatabaseReference employeeRef;
 	private DatabaseReference orderRef;
 	private DatabaseReference phaseRef;
@@ -312,6 +324,7 @@ public final class FirebaseDatabaseImpl implements DatabaseImpl
 		this.initialized = false;
 		this.deInitialized = false;
 		this.fBase = null;
+		this.fStorage = null;
 		this.employeeRef = null;
 		this.orderRef = null;
 		this.phaseRef = null;
@@ -351,6 +364,7 @@ public final class FirebaseDatabaseImpl implements DatabaseImpl
 			try
 			{
 				this.fBase = FirebaseDatabase.getInstance();
+				this.fStorage = FirebaseStorage.getInstance();
 				DatabaseReference rootRef = this.fBase.getReference();
 
 				this.employeeRef = rootRef.child(Employee.class.getSimpleName());
@@ -563,7 +577,8 @@ public final class FirebaseDatabaseImpl implements DatabaseImpl
 			}
 
 			Order newOrder = new Order(newOrderRef.getKey(), user.getId(), orderStatus,
-									   orderDate == null ? null : this.simpleDateFormat.format(orderDate.getTime()), productIds);
+									   orderDate == null ? null : this.simpleDateFormat.format(
+											   orderDate.getTime()), productIds);
 
 			newOrderRef.setValue(newOrder);
 
@@ -713,11 +728,10 @@ public final class FirebaseDatabaseImpl implements DatabaseImpl
 
 			ProductPhase newProductPhase = new ProductPhase(newProductPhaseRef.getKey(),
 															startDate ==
-															null ? null : this.simpleDateFormat.format(startDate.getTime()),
-															endDate ==
-															null ? null : this.simpleDateFormat.format(endDate.getTime()),
-															productPhaseStatus, employee.getId(),
-															phase.getId());
+															null ? null : this.simpleDateFormat.format(
+																	startDate.getTime()), endDate ==
+																						  null ? null : this.simpleDateFormat.format(
+					endDate.getTime()), productPhaseStatus, employee.getId(), phase.getId());
 
 			newProductPhaseRef.setValue(newProductPhase);
 
@@ -1244,6 +1258,36 @@ public final class FirebaseDatabaseImpl implements DatabaseImpl
 		finally
 		{
 			this.lock.unlock();
+		}
+	}
+
+	@Override
+	public <T extends Entity> void downloadImage(Class<T> tClass, String id, Context context,
+												 ImageView imageView)
+			throws
+			IllegalArgumentException,
+			DatabaseException
+	{
+		Throw.ifNull(IllegalArgumentException.class, tClass, "tClass");
+		Throw.ifNull(IllegalArgumentException.class, id, "id");
+		Throw.ifNull(IllegalArgumentException.class, context, "context");
+		Throw.ifNull(IllegalArgumentException.class, imageView, "imageView");
+
+		try
+		{
+			StorageReference rootRef = this.fStorage.getReference();
+			StorageReference entityRef = rootRef.child(tClass.getSimpleName());
+
+			StringBuilder stringBuilder = new StringBuilder();
+			stringBuilder.append(id).append(IMAGE_EXTENSION);
+
+			StorageReference imageRef = entityRef.child(stringBuilder.toString());
+
+			Glide.with(context).using(new FirebaseImageLoader()).load(imageRef).into(imageView);
+		}
+		catch(Exception ex)
+		{
+			throw new DatabaseException(ex);
 		}
 	}
 
