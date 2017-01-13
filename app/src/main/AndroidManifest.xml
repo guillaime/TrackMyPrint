@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.tmp.trackmyprint">
+    package="org.fontys.trackmyprint">
 
     <uses-permission android:name="android.permission.NFC" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
@@ -19,7 +19,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".nfcActivity">
+        <activity android:name=".NFCActivity">
             <intent-filter>
                 <action android:name="android.nfc.action.NDEF_DISCOVERED" />
 
@@ -28,9 +28,8 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".mapActivity" />
-        <activity android:name=".userProcessListActivity" />
-        <activity android:name=".printDetails"></activity>
+        <activity android:name=".MapActivity" />
+        <activity android:name=".PrintDetailsActivity"></activity>
     </application>
 
 </manifest>

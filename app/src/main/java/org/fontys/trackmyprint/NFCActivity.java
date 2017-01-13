@@ -1,4 +1,4 @@
-package com.example.tmp.trackmyprint;
+package org.fontys.trackmyprint;
 
 import android.app.Activity;
 import android.app.PendingIntent;
@@ -17,6 +17,8 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.fontys.trackmyprint.MainActivity;
+
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 
@@ -26,7 +28,7 @@ import java.util.Arrays;
  *
  * @author Ralf Wondratschek
  */
-public class nfcActivity extends AppCompatActivity {
+public class NFCActivity extends AppCompatActivity {
 
     public static final String MIME_TEXT_PLAIN = "text/plain";
     public static final String TAG = "NfcDemo";

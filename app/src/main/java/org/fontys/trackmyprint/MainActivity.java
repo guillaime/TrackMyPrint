@@ -1,4 +1,4 @@
-package com.example.tmp.trackmyprint;
+package org.fontys.trackmyprint;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import org.fontys.trackmyprint.adapters.ProductPhaseListAdapter;
 import org.fontys.trackmyprint.database.Database;
 import org.fontys.trackmyprint.database.DatabaseException;
 import org.fontys.trackmyprint.database.DatabaseListener;
@@ -28,7 +29,7 @@ public class MainActivity extends AppCompatActivity implements DatabaseListener
 {
 	private Employee currentEmployee;
 
-	private production_proccess_list_adapter adapter;
+	private ProductPhaseListAdapter adapter;
 
 	private ImageButton btnScan;
 
@@ -114,7 +115,7 @@ public class MainActivity extends AppCompatActivity implements DatabaseListener
 		}
 		else
 		{
-			status.setImageResource(R.drawable.checkedinbtn);
+			status.setImageResource(R.drawable.checkedin_btn);
 			lblScan.setText("Scan a product");
 			btnScan.setImageResource(R.color.colorScanButton);
 
@@ -124,7 +125,7 @@ public class MainActivity extends AppCompatActivity implements DatabaseListener
 				public void onClick(View v)
 				{
 					if(getCurrentPhase()!= null){
-						Intent intent = new Intent(MainActivity.this, nfcActivity.class);
+						Intent intent = new Intent(MainActivity.this, NFCActivity.class);
 						startActivity(intent);
 					}
 				}
@@ -174,7 +175,7 @@ public class MainActivity extends AppCompatActivity implements DatabaseListener
 
 		listPhases.addAll(phases.values());
 
-		this.adapter = new production_proccess_list_adapter(this, listPhases);
+		this.adapter = new ProductPhaseListAdapter(this, listPhases);
 		ListView productionProcessListView = (ListView) findViewById(R.id.production_proccess);
 		productionProcessListView.setAdapter(this.adapter);
 	}

@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.example.tmp.trackmyprint.MainActivity">
+    tools:context=".MainActivity">
 
     <ImageView
         android:layout_width="0dp"
@@ -22,7 +22,7 @@
     <ImageView
         android:layout_width="50dp"
         android:layout_height="50dp"
-        app:srcCompat="@drawable/profileimage"
+        app:srcCompat="@drawable/dummy_profileimage"
         android:id="@+id/profile_image"
         app:layout_constraintBottom_toBottomOf="@+id/top"
         app:layout_constraintTop_toTopOf="@+id/top"
