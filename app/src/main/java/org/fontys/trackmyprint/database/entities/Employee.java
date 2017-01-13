@@ -46,7 +46,15 @@ public final class Employee extends Entity
 
 	public String getPhaseId()
 	{
-		return this.phaseId;
+		this.lock.lock();
+		try
+		{
+			return this.phaseId;
+		}
+		finally
+		{
+			this.lock.unlock();
+		}
 	}
 
 	public void setPhaseId(String phaseId)
