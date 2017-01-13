@@ -98,32 +98,7 @@ public class MainActivity extends AppCompatActivity implements DatabaseListener
 			e.printStackTrace();
 		}
 
-		ImageView status = (ImageView) findViewById(R.id.check_in_status);
-		TextView lblScan = (TextView) findViewById(R.id.lblScan);
-
-		if(p == null)
-		{
-			status.setImageResource(R.drawable.checkin_status);
-			lblScan.setText("Please check in to a sector");
-			btnScan.setImageResource(R.color.colorProfileRectangle);
-		}
-		else
-		{
-			status.setImageResource(R.drawable.checkedinbtn);
-			lblScan.setText("Scan a product");
-			btnScan.setImageResource(R.color.colorScanButton);
-
-			btnScan.setOnClickListener(new View.OnClickListener()
-			{
-				@Override
-				public void onClick(View v)
-				{
-					Intent intent = new Intent(MainActivity.this, nfcActivity.class);
-					startActivity(intent);
-				}
-			});
-		}
-		adapter.notifyDataSetChanged();
+		updateGUIPhase(p);
 	}
 
 	private void updateGUIPhase(Phase p){
