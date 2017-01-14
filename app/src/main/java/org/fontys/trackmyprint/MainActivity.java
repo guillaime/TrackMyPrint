@@ -1,12 +1,15 @@
 package org.fontys.trackmyprint;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import org.fontys.trackmyprint.adapters.ProductPhaseListAdapter;
@@ -28,12 +31,10 @@ import java.util.Map;
 public class MainActivity extends AppCompatActivity implements DatabaseListener
 {
 	private Employee currentEmployee;
-
 	private ProductPhaseListAdapter adapter;
-
 	private ImageButton btnScan;
-
 	private static MainActivity instance;
+	private ProgressBar progressBar;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -43,6 +44,8 @@ public class MainActivity extends AppCompatActivity implements DatabaseListener
 		setContentView(R.layout.activity_main);
 
 		btnScan = (ImageButton) findViewById(R.id.btnScan);
+		progressBar = (ProgressBar) findViewById(R.id.progressBar);
+		progressBar.getIndeterminateDrawable().setColorFilter(Color.rgb(235, 127, 0), PorterDuff.Mode.MULTIPLY);
 
 		try
 		{
@@ -52,7 +55,6 @@ public class MainActivity extends AppCompatActivity implements DatabaseListener
 		catch(Exception ex)
 		{
 			Database.getInstance().removeDatabaseListener(this);
-
 			ex.printStackTrace();
 		}
 
@@ -176,6 +178,9 @@ public class MainActivity extends AppCompatActivity implements DatabaseListener
 		listPhases.addAll(phases.values());
 
 		this.adapter = new ProductPhaseListAdapter(this, listPhases);
+
+		progressBar.setVisibility(View.GONE);
+
 		ListView productionProcessListView = (ListView) findViewById(R.id.production_proccess);
 		productionProcessListView.setAdapter(this.adapter);
 	}
