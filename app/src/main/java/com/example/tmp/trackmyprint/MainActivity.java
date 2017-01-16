@@ -27,6 +27,9 @@ import java.util.Map;
 public class MainActivity extends AppCompatActivity implements DatabaseListener
 {
 	private Employee currentEmployee;
+	private Product currentProduct;
+
+	private List<Product> listProducts;
 
 	private production_proccess_list_adapter adapter;
 
@@ -41,8 +44,10 @@ public class MainActivity extends AppCompatActivity implements DatabaseListener
 
 		setContentView(R.layout.activity_main);
 
+
 		btnScan = (ImageButton) findViewById(R.id.btnScan);
 
+		listProducts = new ArrayList<>();
 		try
 		{
 			Database.getInstance().addDatabaseListener(this);
@@ -133,6 +138,26 @@ public class MainActivity extends AppCompatActivity implements DatabaseListener
 		adapter.notifyDataSetChanged();
 	}
 
+	public void setCurrentProduct(String productID) {
+		System.out.println(productID);
+		System.out.println(listProducts.size());
+		currentProduct = Database.getInstance().getProducts().get(productID);
+
+		currentProduct.addProductPhaseId(this.currentEmployee.getPhaseId());
+		try
+		{
+			Database.getInstance().update(this.currentProduct);
+		}
+		catch(DatabaseException e)
+		{
+			e.printStackTrace();
+		}
+	}
+
+	public Product getCurrentProduct() {
+		return Database.getInstance().getProducts().get(this.currentProduct.getId());
+	}
+
 	public Phase getCurrentPhase()
 	{
 		return Database.getInstance().getPhases().get(this.currentEmployee.getPhaseId());
@@ -180,9 +205,8 @@ public class MainActivity extends AppCompatActivity implements DatabaseListener
 	}
 
 	@Override
-	public void onProductsInitialized(Map<String, Product> phases)
+	public void onProductsInitialized(Map<String, Product> products)
 	{
-
 	}
 
 	@Override
@@ -254,19 +278,28 @@ public class MainActivity extends AppCompatActivity implements DatabaseListener
 	@Override
 	public void onProductAdded(Product product)
 	{
-
+		listProducts.add(product);
 	}
 
 	@Override
 	public void onProductRemoved(Product product)
 	{
-
+		for (Product p : listProducts) {
+			if (p.getId() == product.getId()) {
+				listProducts.remove(p);
+			}
+		}
 	}
 
 	@Override
 	public void onProductChanged(Product product)
 	{
-
+		for (Product p : listProducts) {
+			if (p.getId() == product.getId()) {
+				listProducts.remove(p);
+				listProducts.add(product);
+			}
+		}
 	}
 
 	@Override

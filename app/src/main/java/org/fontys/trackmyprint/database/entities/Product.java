@@ -15,7 +15,14 @@ import java.util.concurrent.locks.ReentrantLock;
 public final class Product extends Entity
 {
 	private final String name;
-	private final String image;
+	private final String imageFront;
+	private final String imageBack;
+	private final String paperSize;
+	private final String paperColor;
+	private final String marginLeft;
+	private final String marginRight;
+	private final String marginTop;
+	private final String marginBottom;
 	private final String description;
 	private final int amount;
 	private final String orderId;
@@ -27,7 +34,14 @@ public final class Product extends Entity
 		super(EntityType.PRODUCT);
 
 		this.name = null;
-		this.image = null;
+		this.imageFront = null;
+		this.imageBack = null;
+		this.paperSize = null;
+		this.paperColor = null;
+		this.marginLeft = null;
+		this.marginRight = null;
+		this.marginTop = null;
+		this.marginBottom = null;
 		this.description = null;
 		this.amount = 0;
 		this.orderId = null;
@@ -35,20 +49,34 @@ public final class Product extends Entity
 		this.lock = new ReentrantLock();
 	}
 
-	public Product(String id, String name, String image, String description, int amount, String orderId, List<String> productPhaseIds)
+	public Product(String id, String name, String imageFront, String imageBack, String paperSize, String paperColor, String marginLeft, String marginRight, String marginTop, String marginBottom, String description, int amount, String orderId, List<String> productPhaseIds)
 			throws
 			IllegalArgumentException
 	{
 		super(EntityType.PRODUCT, id);
 
 		Throw.ifNull(IllegalArgumentException.class, name, "name");
-		Throw.ifNull(IllegalArgumentException.class, image, "image");
+		Throw.ifNull(IllegalArgumentException.class, imageFront, "imageFront");
+		Throw.ifNull(IllegalArgumentException.class, imageBack, "imageBack");
+		Throw.ifNull(IllegalArgumentException.class, paperSize, "paperSize");
+		Throw.ifNull(IllegalArgumentException.class, paperColor, "paperColor");
+		Throw.ifNull(IllegalArgumentException.class, marginLeft, "marginLeft");
+		Throw.ifNull(IllegalArgumentException.class, marginRight, "marginRight");
+		Throw.ifNull(IllegalArgumentException.class, marginTop, "marginTop");
+		Throw.ifNull(IllegalArgumentException.class, marginBottom, "marginBottom");
 		Throw.ifNull(IllegalArgumentException.class, description, "description");
 		Throw.ifNull(IllegalArgumentException.class, orderId, "orderId");
 		Throw.ifOutOfRangeInMin(IllegalArgumentException.class, amount, "amount", 0);
 
 		this.name = name;
-		this.image = image;
+		this.imageFront = imageFront;
+		this.imageBack = imageBack;
+		this.paperSize = paperSize;
+		this.paperColor = paperColor;
+		this.marginLeft = marginLeft;
+		this.marginRight = marginRight;
+		this.marginTop = marginTop;
+		this.marginBottom = marginBottom;
 		this.description = description;
 		this.amount = amount;
 		this.orderId = orderId;
@@ -67,11 +95,11 @@ public final class Product extends Entity
 		}
 	}
 
-	public Product(String id, String name, String image, String description, int amount, String orderId)
+	public Product(String id, String name, String imageFront, String imageBack, String paperSize, String marginLeft, String marginRight, String marginTop, String marginBottom, String paperColor, String description, int amount, String orderId)
 		throws
 		IllegalArgumentException
 	{
-		this(id, name, image, description, amount, orderId, null);
+		this(id, name, imageFront, imageBack, paperSize, paperColor, marginLeft, marginRight, marginTop , marginBottom , description, amount, orderId, null);
 	}
 
 	public boolean addProductPhaseId(String productPhaseId)
@@ -139,9 +167,14 @@ public final class Product extends Entity
 		return this.name;
 	}
 
-	public String getImage()
+	public String getImageFront()
 	{
-		return this.image;
+		return this.imageFront;
+	}
+
+	public String getImageBack()
+	{
+		return this.imageBack;
 	}
 
 	public String getDescription()
@@ -149,9 +182,34 @@ public final class Product extends Entity
 		return this.description;
 	}
 
+	public String getPaperSize() {
+  		return this.paperSize;
+	}
+
+	public String getPaperColor() {
+		return this.paperColor;
+	}
+
 	public int getAmount()
 	{
 		return this.amount;
+	}
+
+	public String getMarginTop()
+	{
+		return this.marginTop;
+	}
+	public String getMarginLeft()
+	{
+		return this.marginLeft;
+	}
+	public String getMarginRight()
+	{
+		return this.marginRight;
+	}
+	public String getMarginBottom()
+	{
+		return this.marginBottom;
 	}
 
 	public String getOrderId()
