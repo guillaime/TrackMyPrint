@@ -61,12 +61,12 @@ public interface DatabaseImpl
 			IllegalArgumentException,
 			DatabaseException;
 
-	Product createProduct(String name, String image, String description, int amount, Order order, Map<String, ProductPhase> productPhases)
+	Product createProduct(String name, String imageFront, String imageBack, String paperSize, String paperColor, String marginLeft, String marginRight, String marginTop, String marginBottom, String description, int amount, Order order, Map<String, ProductPhase> productPhases)
 			throws
 			IllegalArgumentException,
 			DatabaseException;
 
-	Product createProduct(String name, String image, String description, int amount, Order order)
+	Product createProduct(String name, String imageFront, String imageBack, String paperSize, String paperColor, String marginLeft, String marginRight, String marginTop, String marginBottom,String description, int amount, Order order)
 			throws
 			IllegalArgumentException,
 			DatabaseException;

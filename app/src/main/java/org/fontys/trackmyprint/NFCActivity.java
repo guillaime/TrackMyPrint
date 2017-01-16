@@ -1,9 +1,10 @@
-package org.fontys.trackmyprint;
+package com.example.tmp.trackmyprint;
 
 import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.media.Image;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
@@ -13,6 +14,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -239,7 +242,21 @@ public class NFCActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String result) {
             if (result != null) {
-                textView2.setText("Read content: " + result);
+                textView2.setText("Gescande product: " + result);
+                final String product = result;
+                ImageButton btnDetail = (ImageButton) findViewById(R.id.btnDetails);
+                MainActivity.getInstance().setCurrentProduct(product);
+                btnDetail.setOnClickListener(new View.OnClickListener()
+                {
+                    @Override
+                    public void onClick(View v)
+                    {
+                        if(MainActivity.getInstance().getCurrentProduct() != null){
+                            Intent intent = new Intent(nfcActivity.this, printDetails.class);
+                            startActivity(intent);
+                        }
+                    }
+                });
                 // result in shared memory zetten?
             }
         }

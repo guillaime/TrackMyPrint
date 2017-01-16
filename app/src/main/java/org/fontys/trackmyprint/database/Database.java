@@ -116,23 +116,23 @@ public final class Database implements DatabaseImpl
 	}
 
 	@Override
-	public Product createProduct(String name, String image, String description, int amount,
+	public Product createProduct(String name, String imageFront, String imageBack, String paperSize, String paperColor , String marginLeft, String marginRight, String marginTop, String marginBottom, String description, int amount,
 								 Order order, Map<String, ProductPhase> productPhases)
 			throws
 			IllegalArgumentException,
 			DatabaseException
 	{
-		return this.databaseImpl.createProduct(name, image, description, amount, order, productPhases);
+		return this.databaseImpl.createProduct(name, imageFront, imageBack, paperSize, paperColor, marginLeft, marginRight, marginTop, marginBottom, description, amount, order, productPhases);
 	}
 
 	@Override
-	public Product createProduct(String name, String image, String description, int amount,
+	public Product createProduct(String name, String imageFront, String imageBack, String paperSize, String paperColor,String marginLeft, String marginRight, String marginTop, String marginBottom,String description, int amount,
 								 Order order)
 			throws
 			IllegalArgumentException,
 			DatabaseException
 	{
-		return this.databaseImpl.createProduct(name, image, description, amount, order);
+		return this.databaseImpl.createProduct(name, imageFront, imageBack, paperSize, paperColor, marginLeft, marginRight, marginTop, marginBottom, description, amount, order);
 	}
 
 	@Override

@@ -1,18 +1,14 @@
-package org.fontys.trackmyprint;
+package com.example.tmp.trackmyprint;
 
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import org.fontys.trackmyprint.adapters.ProductPhaseListAdapter;
 import org.fontys.trackmyprint.database.Database;
 import org.fontys.trackmyprint.database.DatabaseException;
 import org.fontys.trackmyprint.database.DatabaseListener;
@@ -31,6 +27,12 @@ import java.util.Map;
 public class MainActivity extends AppCompatActivity implements DatabaseListener
 {
 	private Employee currentEmployee;
+	private Product currentProduct;
+
+	private List<Product> listProducts;
+
+	private production_proccess_list_adapter adapter;
+
 	private ProductPhaseListAdapter adapter;
 	private ImageButton btnScan;
 	private static MainActivity instance;
@@ -47,6 +49,7 @@ public class MainActivity extends AppCompatActivity implements DatabaseListener
 		progressBar = (ProgressBar) findViewById(R.id.progressBar);
 		progressBar.getIndeterminateDrawable().setColorFilter(Color.rgb(235, 127, 0), PorterDuff.Mode.MULTIPLY);
 
+		listProducts = new ArrayList<>();
 		try
 		{
 			Database.getInstance().addDatabaseListener(this);
@@ -55,6 +58,7 @@ public class MainActivity extends AppCompatActivity implements DatabaseListener
 		catch(Exception ex)
 		{
 			Database.getInstance().removeDatabaseListener(this);
+
 			ex.printStackTrace();
 		}
 
@@ -136,6 +140,26 @@ public class MainActivity extends AppCompatActivity implements DatabaseListener
 		adapter.notifyDataSetChanged();
 	}
 
+	public void setCurrentProduct(String productID) {
+		System.out.println(productID);
+		System.out.println(listProducts.size());
+		currentProduct = Database.getInstance().getProducts().get(productID);
+
+		currentProduct.addProductPhaseId(this.currentEmployee.getPhaseId());
+		try
+		{
+			Database.getInstance().update(this.currentProduct);
+		}
+		catch(DatabaseException e)
+		{
+			e.printStackTrace();
+		}
+	}
+
+	public Product getCurrentProduct() {
+		return Database.getInstance().getProducts().get(this.currentProduct.getId());
+	}
+
 	public Phase getCurrentPhase()
 	{
 		return Database.getInstance().getPhases().get(this.currentEmployee.getPhaseId());
@@ -186,7 +210,7 @@ public class MainActivity extends AppCompatActivity implements DatabaseListener
 	}
 
 	@Override
-	public void onProductsInitialized(Map<String, Product> phases)
+	public void onProductsInitialized(Map<String, Product> products)
 	{
 
 	}
@@ -260,19 +284,28 @@ public class MainActivity extends AppCompatActivity implements DatabaseListener
 	@Override
 	public void onProductAdded(Product product)
 	{
-
+		listProducts.add(product);
 	}
 
 	@Override
 	public void onProductRemoved(Product product)
 	{
-
+		for (Product p : listProducts) {
+			if (p.getId() == product.getId()) {
+				listProducts.remove(p);
+			}
+		}
 	}
 
 	@Override
 	public void onProductChanged(Product product)
 	{
-
+		for (Product p : listProducts) {
+			if (p.getId() == product.getId()) {
+				listProducts.remove(p);
+				listProducts.add(product);
+			}
+		}
 	}
 
 	@Override
