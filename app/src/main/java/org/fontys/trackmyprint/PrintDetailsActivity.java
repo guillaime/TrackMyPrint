@@ -48,19 +48,19 @@ public class PrintDetailsActivity extends AppCompatActivity {
 
         switch (mInstance.getCurrentPhase().getName()) {
             case "Prepairing":
-                imgPhaseIcon.setImageResource(R.drawable.quality_control_solid);
+                imgPhaseIcon.setImageResource(R.drawable.quality_control_oval);
                 setViewPrepairing();
                 break;
             case "Printing":
-                imgPhaseIcon.setImageResource(R.drawable.printer_solid);
+                imgPhaseIcon.setImageResource(R.drawable.printer_oval);
                 setViewPrinting();
                 break;
             case "Cutting":
-                imgPhaseIcon.setImageResource(R.drawable.cutting_solid);
+                imgPhaseIcon.setImageResource(R.drawable.cutting_oval);
                 setViewCutting();
                 break;
             case "Quality control":
-                imgPhaseIcon.setImageResource(R.drawable.quality_control_solid);
+                imgPhaseIcon.setImageResource(R.drawable.quality_control_oval);
                 setViewQualityControl();
         }
 

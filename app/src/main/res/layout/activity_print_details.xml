@@ -25,7 +25,7 @@
     <ImageView
         android:layout_width="50dp"
         android:layout_height="50dp"
-        app:srcCompat="@drawable/profileimage"
+        app:srcCompat="@drawable/dummy_profileimage"
         android:id="@+id/profile_image"
         app:layout_constraintBottom_toBottomOf="@+id/top"
         app:layout_constraintLeft_toLeftOf="@+id/top"
@@ -99,7 +99,7 @@
             android:layout_height="match_parent">
 
             <ImageView
-                app:srcCompat="@drawable/printer_solid"
+                app:srcCompat="@drawable/printer_oval"
                 android:id="@+id/imgPhaseIcon"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintLeft_toRightOf="@+id/imageView6"

@@ -1,14 +1,19 @@
-package com.example.tmp.trackmyprint;
+package org.fontys.trackmyprint;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import org.fontys.trackmyprint.R;
+import org.fontys.trackmyprint.adapters.ProductPhaseListAdapter;
 import org.fontys.trackmyprint.database.Database;
 import org.fontys.trackmyprint.database.DatabaseException;
 import org.fontys.trackmyprint.database.DatabaseListener;
@@ -30,8 +35,6 @@ public class MainActivity extends AppCompatActivity implements DatabaseListener
 	private Product currentProduct;
 
 	private List<Product> listProducts;
-
-	private production_proccess_list_adapter adapter;
 
 	private ProductPhaseListAdapter adapter;
 	private ImageButton btnScan;

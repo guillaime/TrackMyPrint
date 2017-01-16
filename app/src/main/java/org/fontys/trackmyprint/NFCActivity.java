@@ -1,10 +1,9 @@
-package com.example.tmp.trackmyprint;
+package org.fontys.trackmyprint;
 
 import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.media.Image;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
@@ -15,12 +14,11 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.fontys.trackmyprint.MainActivity;
+import org.fontys.trackmyprint.R;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
@@ -252,7 +250,7 @@ public class NFCActivity extends AppCompatActivity {
                     public void onClick(View v)
                     {
                         if(MainActivity.getInstance().getCurrentProduct() != null){
-                            Intent intent = new Intent(nfcActivity.this, printDetails.class);
+                            Intent intent = new Intent(NFCActivity.this, PrintDetailsActivity.class);
                             startActivity(intent);
                         }
                     }
