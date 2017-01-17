@@ -33,7 +33,7 @@
             android:layout_marginLeft="32dp" />
 
         <ImageButton
-            app:srcCompat="@drawable/checkinbtn"
+            app:srcCompat="@drawable/checkin_btn"
             android:id="@+id/imageButtonCheck"
             app:layout_constraintTop_toTopOf="parent"
             android:layout_marginEnd="32dp"

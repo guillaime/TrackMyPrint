@@ -1,9 +1,9 @@
-package com.example.tmp.trackmyprint;
+package org.fontys.trackmyprint;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-public class mapActivity extends AppCompatActivity {
+public class MapActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
