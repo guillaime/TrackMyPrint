@@ -128,6 +128,11 @@ public class MainActivity extends AppCompatActivity implements DatabaseListener
 
 	public Phase getCurrentPhase()
 	{
+		if(this.currentEmployee == null)
+		{
+			return null;
+		}
+
 		return Database.getInstance().getPhases().get(this.currentEmployee.getPhaseId());
 	}
 
