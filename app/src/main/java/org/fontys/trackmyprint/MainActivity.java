@@ -131,11 +131,11 @@ public class MainActivity extends AppCompatActivity implements DatabaseListener
 
 		if(this.currentEmployee.getLastCheckedInDate() == null)
 		{
-			this.lastCheckInTextView.setText("");
+			this.lastCheckInTextView.setText("Never checked in");
 		}
 		else
 		{
-			this.lastCheckInTextView.setText(this.currentEmployee.getLastCheckedInDate());
+			this.lastCheckInTextView.setText("Last checked in at\n" + this.currentEmployee.getLastCheckedInDate());
 		}
 
 		if(p == null)
@@ -194,6 +194,10 @@ public class MainActivity extends AppCompatActivity implements DatabaseListener
 		{
 			ex.printStackTrace();
 		}
+
+		employeeName.setVisibility(View.VISIBLE);
+		employeeImage.setVisibility(View.VISIBLE);
+		this.lastCheckInTextView.setVisibility(View.VISIBLE);
 
 		updateGUIPhase(getCurrentPhase());
 	}
