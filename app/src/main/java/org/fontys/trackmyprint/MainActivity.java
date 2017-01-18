@@ -141,7 +141,7 @@ public class MainActivity extends AppCompatActivity implements DatabaseListener
 		if(p == null)
 		{
 			status.setImageResource(R.drawable.checkin_status);
-			lblScan.setText("Please check in to a sector");
+			lblScan.setText("Please check in to a phase");
 			btnScan.setImageResource(R.color.colorProfileRectangle);
 		}
 		else
