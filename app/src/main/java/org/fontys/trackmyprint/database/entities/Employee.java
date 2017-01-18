@@ -14,6 +14,7 @@ public final class Employee extends Entity
 	private String phaseId;
 	private final String name;
 	private final ReentrantLock lock;
+	private String lastCheckedInDate;
 
 	private Employee()
 	{
@@ -22,9 +23,10 @@ public final class Employee extends Entity
 		this.phaseId = null;
 		this.name = null;
 		this.lock = new ReentrantLock();
+		this.lastCheckedInDate = null;
 	}
 
-	public Employee(String id, String phaseId, String name)
+	public Employee(String id, String phaseId, String name, String lastCheckedInDate)
 			throws
 			IllegalArgumentException
 	{
@@ -35,13 +37,14 @@ public final class Employee extends Entity
 		this.phaseId = phaseId;
 		this.name = name;
 		this.lock = new ReentrantLock();
+		this.lastCheckedInDate = lastCheckedInDate;
 	}
 
 	public Employee(String id, String name)
 		throws
 		IllegalArgumentException
 	{
-		this(id, null, name);
+		this(id, null, name, null);
 	}
 
 	public String getPhaseId()
@@ -79,5 +82,31 @@ public final class Employee extends Entity
 	public ReentrantLock getLock()
 	{
 		return this.lock;
+	}
+
+	public String getLastCheckedInDate()
+	{
+		this.lock.lock();
+		try
+		{
+			return this.lastCheckedInDate;
+		}
+		finally
+		{
+			this.lock.unlock();
+		}
+	}
+
+	public void setLastCheckedInDate(String set)
+	{
+		this.lock.lock();
+		try
+		{
+			this.lastCheckedInDate = set;
+		}
+		finally
+		{
+			this.lock.unlock();
+		}
 	}
 }

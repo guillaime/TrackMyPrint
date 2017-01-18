@@ -19,8 +19,16 @@ public final class Product extends Entity
 	private final String description;
 	private final int amount;
 	private final String orderId;
-	private final List<String>  productPhaseIds;
+	private final List<String> productPhaseIds;
 	private final ReentrantLock lock;
+	private final String imageBack;
+	private final String imageFront;
+	private final int marginBottom;
+	private final int marginLeft;
+	private final int marginRight;
+	private final int marginTop;
+	private final String paperColor;
+	private final String paperSize;
 
 	public Product()
 	{
@@ -33,9 +41,20 @@ public final class Product extends Entity
 		this.orderId = null;
 		this.productPhaseIds = null;
 		this.lock = new ReentrantLock();
+		this.imageBack = null;
+		this.imageFront = null;
+		this.marginBottom = 0;
+		this.marginLeft = 0;
+		this.marginRight = 0;
+		this.marginTop = 0;
+		this.paperColor = null;
+		this.paperSize = null;
 	}
 
-	public Product(String id, String name, String image, String description, int amount, String orderId, List<String> productPhaseIds)
+	public Product(String id, String name, String image, String description, int amount,
+				   String orderId, String imageBack, String imageFront, int marginBottom,
+				   int marginLeft, int marginRight, int marginTop, String paperColor,
+				   String paperSize, List<String> productPhaseIds)
 			throws
 			IllegalArgumentException
 	{
@@ -46,6 +65,14 @@ public final class Product extends Entity
 		Throw.ifNull(IllegalArgumentException.class, description, "description");
 		Throw.ifNull(IllegalArgumentException.class, orderId, "orderId");
 		Throw.ifOutOfRangeInMin(IllegalArgumentException.class, amount, "amount", 0);
+		Throw.ifNull(IllegalArgumentException.class, imageBack, "imageBack");
+		Throw.ifNull(IllegalArgumentException.class, imageFront, "imageFront");
+		Throw.ifOutOfRangeExMin(IllegalArgumentException.class, marginBottom, "marginBottom", 0);
+		Throw.ifOutOfRangeExMin(IllegalArgumentException.class, marginLeft, "marginLeft", 0);
+		Throw.ifOutOfRangeExMin(IllegalArgumentException.class, marginRight, "marginRight", 0);
+		Throw.ifOutOfRangeExMin(IllegalArgumentException.class, marginTop, "marginTop", 0);
+		Throw.ifNull(IllegalArgumentException.class, paperColor, "paperColor");
+		Throw.ifNull(IllegalArgumentException.class, paperSize, "paperSize");
 
 		this.name = name;
 		this.image = image;
@@ -54,6 +81,14 @@ public final class Product extends Entity
 		this.orderId = orderId;
 		this.productPhaseIds = new ArrayList<>();
 		this.lock = new ReentrantLock();
+		this.imageBack = imageBack;
+		this.imageFront = imageFront;
+		this.marginBottom = marginBottom;
+		this.marginLeft = marginLeft;
+		this.marginRight = marginRight;
+		this.marginTop = marginTop;
+		this.paperColor = paperColor;
+		this.paperSize = paperSize;
 
 		if(productPhaseIds != null)
 		{
@@ -67,11 +102,15 @@ public final class Product extends Entity
 		}
 	}
 
-	public Product(String id, String name, String image, String description, int amount, String orderId)
-		throws
-		IllegalArgumentException
+	public Product(String id, String name, String image, String description, int amount,
+				   String orderId, String imageBack, String imageFront, int marginBottom,
+				   int marginLeft, int marginRight, int marginTop, String paperColor,
+				   String paperSize)
+			throws
+			IllegalArgumentException
 	{
-		this(id, name, image, description, amount, orderId, null);
+		this(id, name, image, description, amount, orderId, imageBack, imageFront, marginBottom,
+			 marginLeft, marginTop, marginRight, paperColor, paperSize, null);
 	}
 
 	public boolean addProductPhaseId(String productPhaseId)
@@ -157,6 +196,41 @@ public final class Product extends Entity
 	public String getOrderId()
 	{
 		return this.orderId;
+	}
+
+	public String getImageBack()
+	{
+		return this.imageBack;
+	}
+
+	public String getImageFront()
+	{
+		return this.imageFront;
+	}
+
+	public int getMarginBottom()
+	{
+		return this.marginBottom;
+	}
+
+	public int getMarginLeft()
+	{
+		return this.marginLeft;
+	}
+
+	public int getMarginTop()
+	{
+		return this.marginTop;
+	}
+
+	public String getPaperColor()
+	{
+		return this.paperColor;
+	}
+
+	public String getPaperSize()
+	{
+		return this.paperSize;
 	}
 
 	public List<String> getProductPhaseIds()
