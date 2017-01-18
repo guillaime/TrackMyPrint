@@ -1,9 +1,13 @@
 package org.fontys.trackmyprint;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageButton;
@@ -11,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.fontys.trackmyprint.adapters.ProductPhaseListAdapter;
 import org.fontys.trackmyprint.database.Database;
@@ -35,6 +40,7 @@ public class MainActivity extends AppCompatActivity implements DatabaseListener
 	private ImageButton btnScan;
 	private static MainActivity instance;
 	private ProgressBar progressBar;
+	private static final int PERMISSION_READ_STATE = 0;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -65,6 +71,7 @@ public class MainActivity extends AppCompatActivity implements DatabaseListener
 
 		instance = this;
 	}
+
 
 	@Override
 	protected void onDestroy()
@@ -138,12 +145,55 @@ public class MainActivity extends AppCompatActivity implements DatabaseListener
 
 	public Phase getCurrentPhase()
 	{
+		if(this.currentEmployee == null)
+		{
+			return null;
+		}
+
 		return Database.getInstance().getPhases().get(this.currentEmployee.getPhaseId());
 	}
+
+
 
 	@Override
 	public void onEmployeesInitialized(Map<String, Employee> employees)
 	{
+		/*if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE)
+
+				!= PackageManager.PERMISSION_GRANTED) {
+
+			// We do not have this permission. Let's ask the user
+			ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_PHONE_STATE}, PERMISSION_READ_STATE);
+		}
+		*/
+
+		// Here, thisActivity is the current activity
+		if (ContextCompat.checkSelfPermission(this,
+				Manifest.permission.READ_PHONE_STATE)
+				!= PackageManager.PERMISSION_GRANTED) {
+
+			// Should we show an explanation?
+			if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+					Manifest.permission.READ_PHONE_STATE)) {
+
+				// Show an explanation to the user *asynchronously* -- don't block
+				// this thread waiting for the user's response! After the user
+				// sees the explanation, try again to request the permission.
+
+			} else {
+
+				// No explanation needed, we can request the permission.
+
+				ActivityCompat.requestPermissions(this,
+						new String[]{Manifest.permission.READ_PHONE_STATE},
+						PERMISSION_READ_STATE);
+
+				// MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
+				// app-defined int constant. The callback method gets the
+				// result of the request.
+			}
+		}
+
 		this.currentEmployee = employees.get(Phone.getIMEI(getApplicationContext()));
 
 		TextView employeeName = (TextView) findViewById(R.id.profile_name);

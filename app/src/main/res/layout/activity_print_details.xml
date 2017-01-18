@@ -35,7 +35,7 @@
         app:layout_constraintVertical_bias="0.29000002" />
 
     <TextView
-        android:text="Luuk Hermans"
+        android:text="Order ID: K4U23S"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/profile_name"
@@ -46,7 +46,7 @@
         app:layout_constraintTop_toTopOf="@+id/profile_image" />
 
     <TextView
-        android:text="Last check at 5.15 pm"
+        android:text="Order date: 15-01-2017"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/last_check_in"
