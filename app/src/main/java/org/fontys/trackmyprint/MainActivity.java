@@ -17,6 +17,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.fontys.trackmyprint.R;
 import org.fontys.trackmyprint.adapters.ProductPhaseListAdapter;
 import org.fontys.trackmyprint.database.Database;
 import org.fontys.trackmyprint.database.DatabaseException;
@@ -36,6 +37,10 @@ import java.util.Map;
 public class MainActivity extends AppCompatActivity implements DatabaseListener
 {
 	private Employee currentEmployee;
+	private Product currentProduct;
+
+	private List<Product> listProducts;
+
 	private ProductPhaseListAdapter adapter;
 	private ImageButton btnScan;
 	private static MainActivity instance;
@@ -53,6 +58,7 @@ public class MainActivity extends AppCompatActivity implements DatabaseListener
 		progressBar = (ProgressBar) findViewById(R.id.progressBar);
 		progressBar.getIndeterminateDrawable().setColorFilter(Color.rgb(235, 127, 0), PorterDuff.Mode.MULTIPLY);
 
+		listProducts = new ArrayList<>();
 		try
 		{
 			Database.getInstance().addDatabaseListener(this);
@@ -61,6 +67,7 @@ public class MainActivity extends AppCompatActivity implements DatabaseListener
 		catch(Exception ex)
 		{
 			Database.getInstance().removeDatabaseListener(this);
+
 			ex.printStackTrace();
 		}
 
@@ -141,6 +148,26 @@ public class MainActivity extends AppCompatActivity implements DatabaseListener
 			});
 		}
 		adapter.notifyDataSetChanged();
+	}
+
+	public void setCurrentProduct(String productID) {
+		System.out.println(productID);
+		System.out.println(listProducts.size());
+		currentProduct = Database.getInstance().getProducts().get(productID);
+
+		currentProduct.addProductPhaseId(this.currentEmployee.getPhaseId());
+		try
+		{
+			Database.getInstance().update(this.currentProduct);
+		}
+		catch(DatabaseException e)
+		{
+			e.printStackTrace();
+		}
+	}
+
+	public Product getCurrentProduct() {
+		return Database.getInstance().getProducts().get(this.currentProduct.getId());
 	}
 
 	public Phase getCurrentPhase()
@@ -236,7 +263,7 @@ public class MainActivity extends AppCompatActivity implements DatabaseListener
 	}
 
 	@Override
-	public void onProductsInitialized(Map<String, Product> phases)
+	public void onProductsInitialized(Map<String, Product> products)
 	{
 
 	}
@@ -310,19 +337,28 @@ public class MainActivity extends AppCompatActivity implements DatabaseListener
 	@Override
 	public void onProductAdded(Product product)
 	{
-
+		listProducts.add(product);
 	}
 
 	@Override
 	public void onProductRemoved(Product product)
 	{
-
+		for (Product p : listProducts) {
+			if (p.getId() == product.getId()) {
+				listProducts.remove(p);
+			}
+		}
 	}
 
 	@Override
 	public void onProductChanged(Product product)
 	{
-
+		for (Product p : listProducts) {
+			if (p.getId() == product.getId()) {
+				listProducts.remove(p);
+				listProducts.add(product);
+			}
+		}
 	}
 
 	@Override

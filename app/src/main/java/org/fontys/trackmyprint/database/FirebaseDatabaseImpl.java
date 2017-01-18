@@ -653,7 +653,7 @@ public final class FirebaseDatabaseImpl implements DatabaseImpl
 	}
 
 	@Override
-	public Product createProduct(String name, String image, String description, int amount,
+	public Product createProduct(String name, String imageFront, String imageBack, String paperSize, String paperColor, String marginLeft, String marginRight, String marginTop, String marginBottom, String description, int amount,
 								 Order order, Map<String, ProductPhase> productPhases)
 			throws
 			IllegalArgumentException,
@@ -681,8 +681,8 @@ public final class FirebaseDatabaseImpl implements DatabaseImpl
 				}
 			}
 
-			Product newProduct = new Product(newProductRef.getKey(), name, image, description,
-											 amount, order.getId(), productPhaseIds);
+			Product newProduct = new Product(newProductRef.getKey(), name, imageFront, imageBack, paperSize, paperColor, marginLeft, marginRight , marginTop
+					, marginBottom , description, amount, order.getId(), productPhaseIds);
 
 			newProductRef.setValue(newProduct);
 
@@ -701,13 +701,13 @@ public final class FirebaseDatabaseImpl implements DatabaseImpl
 	}
 
 	@Override
-	public Product createProduct(String name, String image, String description, int amount,
+	public Product createProduct(String name, String imageFront, String imageBack, String paperSize, String paperColor,String marginLeft, String marginRight, String marginTop, String marginBottom, String description, int amount,
 								 Order order)
 			throws
 			IllegalArgumentException,
 			DatabaseException
 	{
-		return createProduct(name, image, description, amount, order, null);
+		return createProduct(name, imageFront, imageBack, paperSize, paperColor, marginLeft, marginRight, marginTop, marginBottom, description, amount, order, null);
 	}
 
 	@Override
