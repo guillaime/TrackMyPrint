@@ -60,6 +60,17 @@ public final class Throw
 		}
 	}
 
+	public static <T extends Exception, T2 extends Comparable<T2>> void ifOutOfRangeExMin(Class<T> tClass, T2 value, String valueName, T2 minValue)
+			throws
+			RuntimeException,
+			T
+	{
+		if(value.compareTo(minValue) < 0)
+		{
+			throw create(tClass, buildIfOutOfRangeExMinMessage(valueName, minValue.toString()));
+		}
+	}
+
 	public static <T extends Exception, T2> void ifNotInstanceOf(Class<T> tClass, Object value, String valueName, Class<T2> t2Class)
 			throws
 			RuntimeException,
@@ -111,6 +122,14 @@ public final class Throw
 	{
 		StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append("Argument '").append(valueName).append("' may not be <= ").append(minValue);
+
+		return stringBuilder.toString();
+	}
+
+	private static String buildIfOutOfRangeExMinMessage(String valueName, String minValue)
+	{
+		StringBuilder stringBuilder = new StringBuilder();
+		stringBuilder.append("Argument '").append(valueName).append("' may not be < ").append(minValue);
 
 		return stringBuilder.toString();
 	}

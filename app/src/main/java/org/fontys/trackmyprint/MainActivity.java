@@ -25,6 +25,7 @@ import org.fontys.trackmyprint.database.entities.User;
 import org.fontys.trackmyprint.utils.Phone;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -35,6 +36,7 @@ public class MainActivity extends AppCompatActivity implements DatabaseListener
 	private ImageButton btnScan;
 	private static MainActivity instance;
 	private ProgressBar progressBar;
+	private TextView lastCheckInTextView;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -46,6 +48,8 @@ public class MainActivity extends AppCompatActivity implements DatabaseListener
 		btnScan = (ImageButton) findViewById(R.id.btnScan);
 		progressBar = (ProgressBar) findViewById(R.id.progressBar);
 		progressBar.getIndeterminateDrawable().setColorFilter(Color.rgb(235, 127, 0), PorterDuff.Mode.MULTIPLY);
+
+		this.lastCheckInTextView = (TextView) findViewById(R.id.last_check_in);
 
 		try
 		{
@@ -90,15 +94,31 @@ public class MainActivity extends AppCompatActivity implements DatabaseListener
 
 	public void setCurrentPhase(Phase p)
 	{
-		this.currentEmployee.setPhaseId(p == null ? null : p.getId());
-
+		this.currentEmployee.getLock().lock();
 		try
 		{
-			Database.getInstance().update(this.currentEmployee);
+			if(p == null)
+			{
+				this.currentEmployee.setPhaseId(null);
+			}
+			else
+			{
+				this.currentEmployee.setPhaseId(p.getId());
+				this.currentEmployee.setLastCheckedInDate(Database.getInstance().getDateFormatter().format(new Date()));
+			}
+
+			try
+			{
+				Database.getInstance().update(this.currentEmployee);
+			}
+			catch(DatabaseException e)
+			{
+				e.printStackTrace();
+			}
 		}
-		catch(DatabaseException e)
+		finally
 		{
-			e.printStackTrace();
+			this.currentEmployee.getLock().unlock();
 		}
 
 		updateGUIPhase(p);
@@ -108,6 +128,15 @@ public class MainActivity extends AppCompatActivity implements DatabaseListener
 
 		ImageView status = (ImageView) findViewById(R.id.check_in_status);
 		TextView lblScan = (TextView) findViewById(R.id.lblScan);
+
+		if(this.currentEmployee.getLastCheckedInDate() == null)
+		{
+			this.lastCheckInTextView.setText("");
+		}
+		else
+		{
+			this.lastCheckInTextView.setText(this.currentEmployee.getLastCheckedInDate());
+		}
 
 		if(p == null)
 		{

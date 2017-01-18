@@ -344,7 +344,7 @@ public final class FirebaseDatabaseImpl implements DatabaseImpl
 		this.productChildEventListener = null;
 		this.productPhaseChildEventLister = null;
 		this.userChildEventListener = null;
-		this.simpleDateFormat = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy", Locale.ENGLISH);
+		this.simpleDateFormat = new SimpleDateFormat("EEE MMM dd HH:mm:ss yyyy", Locale.ENGLISH);
 	}
 
 	@Override
@@ -508,19 +508,26 @@ public final class FirebaseDatabaseImpl implements DatabaseImpl
 	}
 
 	@Override
-	public Employee createEmployee(Phase phase, String name)
+	public Employee createEmployee(String id, Phase phase, String name, String lastCheckedInDate)
 			throws
 			IllegalArgumentException,
 			DatabaseException
 	{
-		Throw.ifNull(IllegalArgumentException.class, phase, "phase");
+		Throw.ifNull(IllegalArgumentException.class, id, "id");
 
 		this.lock.lock();
 		try
 		{
-			DatabaseReference newEmployeeRef = this.employeeRef.push();
+			Throw.when(IllegalStateException.class, !this.initialized,
+					   "Database is not initialized");
+			Throw.when(IllegalStateException.class, this.deInitialized,
+					   "Database is de-initialized");
+			throwIfExists(this.employees, id, "Employee already exists");
 
-			Employee newEmployee = new Employee(newEmployeeRef.getKey(), phase.getId(), name);
+			DatabaseReference newEmployeeRef = this.employeeRef.child(id);
+
+			Employee newEmployee = new Employee(id, phase == null ? null : phase.getId(), name,
+												lastCheckedInDate);
 
 			newEmployeeRef.setValue(newEmployee);
 
@@ -539,12 +546,12 @@ public final class FirebaseDatabaseImpl implements DatabaseImpl
 	}
 
 	@Override
-	public Employee createEmployee(String name)
+	public Employee createEmployee(String id, String name)
 			throws
 			IllegalArgumentException,
 			DatabaseException
 	{
-		return createEmployee(null, name);
+		return createEmployee(id, null, name, null);
 	}
 
 	@Override
@@ -654,7 +661,9 @@ public final class FirebaseDatabaseImpl implements DatabaseImpl
 
 	@Override
 	public Product createProduct(String name, String image, String description, int amount,
-								 Order order, Map<String, ProductPhase> productPhases)
+								 Order order, String imageBack, String imageFront, int marginBottom,
+								 int marginLeft, int marginRight, int marginTop, String paperColor,
+								 String paperSize, Map<String, ProductPhase> productPhases)
 			throws
 			IllegalArgumentException,
 			DatabaseException
@@ -682,7 +691,9 @@ public final class FirebaseDatabaseImpl implements DatabaseImpl
 			}
 
 			Product newProduct = new Product(newProductRef.getKey(), name, image, description,
-											 amount, order.getId(), productPhaseIds);
+											 amount, order.getId(), imageBack, imageFront,
+											 marginBottom, marginLeft, marginRight, marginTop,
+											 paperColor, paperSize, productPhaseIds);
 
 			newProductRef.setValue(newProduct);
 
@@ -702,12 +713,16 @@ public final class FirebaseDatabaseImpl implements DatabaseImpl
 
 	@Override
 	public Product createProduct(String name, String image, String description, int amount,
-								 Order order)
+								 Order order, String imageBack, String imageFront, int marginBottom,
+								 int marginLeft, int marginRight, int marginTop, String paperColor,
+								 String paperSize)
 			throws
 			IllegalArgumentException,
 			DatabaseException
 	{
-		return createProduct(name, image, description, amount, order, null);
+		return createProduct(name, image, description, amount, order, imageBack, imageFront,
+							 marginBottom, marginLeft, marginRight, marginTop, paperColor,
+							 paperSize, null);
 	}
 
 	@Override
@@ -1289,6 +1304,12 @@ public final class FirebaseDatabaseImpl implements DatabaseImpl
 		{
 			throw new DatabaseException(ex);
 		}
+	}
+
+	@Override
+	public SimpleDateFormat getDateFormatter()
+	{
+		return this.simpleDateFormat;
 	}
 
 	private <T extends Entity> void throwIfExists(Map<String, T> dataMap, String key,
