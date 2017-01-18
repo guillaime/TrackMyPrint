@@ -11,6 +11,7 @@ import org.fontys.trackmyprint.database.entities.Product;
 import org.fontys.trackmyprint.database.entities.ProductPhase;
 import org.fontys.trackmyprint.database.entities.User;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Map;
 import java.util.concurrent.locks.ReentrantLock;
@@ -52,21 +53,21 @@ public final class Database implements DatabaseImpl
 	}
 
 	@Override
-	public Employee createEmployee(Phase phase, String name)
+	public Employee createEmployee(String id, Phase phase, String name, String lastCheckedInDate)
 			throws
 			IllegalArgumentException,
 			DatabaseException
 	{
-		return this.databaseImpl.createEmployee(phase, name);
+		return this.databaseImpl.createEmployee(id, phase, name, lastCheckedInDate);
 	}
 
 	@Override
-	public Employee createEmployee(String name)
+	public Employee createEmployee(String id, String name)
 			throws
 			IllegalArgumentException,
 			DatabaseException
 	{
-		return this.databaseImpl.createEmployee(name);
+		return this.databaseImpl.createEmployee(id, name);
 	}
 
 	@Override
@@ -117,22 +118,30 @@ public final class Database implements DatabaseImpl
 
 	@Override
 	public Product createProduct(String name, String image, String description, int amount,
-								 Order order, Map<String, ProductPhase> productPhases)
+								 Order order, String imageBack, String imageFront, int marginBottom,
+								 int marginLeft, int marginRight, int marginTop, String paperColor,
+								 String paperSize, Map<String, ProductPhase> productPhases)
 			throws
 			IllegalArgumentException,
 			DatabaseException
 	{
-		return this.databaseImpl.createProduct(name, image, description, amount, order, productPhases);
+		return this.databaseImpl.createProduct(name, image, description, amount, order, imageBack,
+											   imageFront, marginBottom, marginLeft, marginRight,
+											   marginTop, paperColor, paperSize, productPhases);
 	}
 
 	@Override
 	public Product createProduct(String name, String image, String description, int amount,
-								 Order order)
+								 Order order, String imageBack, String imageFront, int marginBottom,
+								 int marginLeft, int marginRight, int marginTop, String paperColor,
+								 String paperSize)
 			throws
 			IllegalArgumentException,
 			DatabaseException
 	{
-		return this.databaseImpl.createProduct(name, image, description, amount, order);
+		return this.databaseImpl.createProduct(name, image, description, amount, order, imageBack,
+											   imageFront, marginBottom, marginLeft, marginRight,
+											   marginTop, paperColor, paperSize);
 	}
 
 	@Override
@@ -143,7 +152,8 @@ public final class Database implements DatabaseImpl
 			IllegalArgumentException,
 			DatabaseException
 	{
-		return this.databaseImpl.createProductPhase(startDate, endDate, productPhaseStatus, employee, phase);
+		return this.databaseImpl.createProductPhase(startDate, endDate, productPhaseStatus,
+													employee, phase);
 	}
 
 	@Override
@@ -337,6 +347,12 @@ public final class Database implements DatabaseImpl
 			DatabaseException
 	{
 		this.databaseImpl.downloadImage(tClass, id, context, imageView);
+	}
+
+	@Override
+	public SimpleDateFormat getDateFormatter()
+	{
+		return this.databaseImpl.getDateFormatter();
 	}
 
 	public static void initializeInstance()

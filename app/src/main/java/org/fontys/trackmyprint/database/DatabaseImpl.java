@@ -11,6 +11,7 @@ import org.fontys.trackmyprint.database.entities.Product;
 import org.fontys.trackmyprint.database.entities.ProductPhase;
 import org.fontys.trackmyprint.database.entities.User;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Map;
 
@@ -26,17 +27,18 @@ public interface DatabaseImpl
 
 	void deInitialize();
 
-	Employee createEmployee(Phase phase, String name)
+	Employee createEmployee(String id, Phase phase, String name, String lastCheckedInDate)
 			throws
 			IllegalArgumentException,
 			DatabaseException;
 
-	Employee createEmployee(String name)
+	Employee createEmployee(String id, String name)
 			throws
 			IllegalArgumentException,
 			DatabaseException;
 
-	Order createOrder(User user, Order.OrderStatus orderStatus, Calendar orderDate, Map<String, Product> products)
+	Order createOrder(User user, Order.OrderStatus orderStatus, Calendar orderDate,
+					  Map<String, Product> products)
 			throws
 			IllegalArgumentException,
 			DatabaseException;
@@ -61,17 +63,24 @@ public interface DatabaseImpl
 			IllegalArgumentException,
 			DatabaseException;
 
-	Product createProduct(String name, String image, String description, int amount, Order order, Map<String, ProductPhase> productPhases)
+	Product createProduct(String name, String image, String description, int amount, Order order,
+						  String imageBack, String imageFront, int marginBottom, int marginLeft,
+						  int marginRight, int marginTop, String paperColor, String paperSize,
+						  Map<String, ProductPhase> productPhases)
 			throws
 			IllegalArgumentException,
 			DatabaseException;
 
-	Product createProduct(String name, String image, String description, int amount, Order order)
+	Product createProduct(String name, String image, String description, int amount, Order order,
+						  String imageBack, String imageFront, int marginBottom, int marginLeft,
+						  int marginRight, int marginTop, String paperColor, String paperSize)
 			throws
 			IllegalArgumentException,
 			DatabaseException;
 
-	ProductPhase createProductPhase(Calendar startDate, Calendar endDate, ProductPhase.ProductPhaseStatus productPhaseStatus, Employee employee, Phase phase)
+	ProductPhase createProductPhase(Calendar startDate, Calendar endDate,
+									ProductPhase.ProductPhaseStatus productPhaseStatus,
+									Employee employee, Phase phase)
 			throws
 			IllegalArgumentException,
 			DatabaseException;
@@ -167,8 +176,11 @@ public interface DatabaseImpl
 
 	void removeDatabaseListener(DatabaseListener databaseListener);
 
-	<T extends Entity> void downloadImage(Class<T> tClass, String id, Context context, ImageView imageView)
+	<T extends Entity> void downloadImage(Class<T> tClass, String id, Context context,
+										  ImageView imageView)
 			throws
 			IllegalArgumentException,
 			DatabaseException;
+
+	SimpleDateFormat getDateFormatter();
 }
