@@ -187,21 +187,10 @@ public class MainActivity extends AppCompatActivity implements DatabaseListener
 	@Override
 	public void onEmployeesInitialized(Map<String, Employee> employees)
 	{
-		/*if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE)
-
-				!= PackageManager.PERMISSION_GRANTED) {
-
-			// We do not have this permission. Let's ask the user
-			ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_PHONE_STATE}, PERMISSION_READ_STATE);
-		}
-		*/
-
-		// Here, thisActivity is the current activity
 		if (ContextCompat.checkSelfPermission(this,
 				Manifest.permission.READ_PHONE_STATE)
 				!= PackageManager.PERMISSION_GRANTED) {
 
-			// Should we show an explanation?
 			if (ActivityCompat.shouldShowRequestPermissionRationale(this,
 					Manifest.permission.READ_PHONE_STATE)) {
 
@@ -210,16 +199,10 @@ public class MainActivity extends AppCompatActivity implements DatabaseListener
 				// sees the explanation, try again to request the permission.
 
 			} else {
-
-				// No explanation needed, we can request the permission.
-
+				
 				ActivityCompat.requestPermissions(this,
 						new String[]{Manifest.permission.READ_PHONE_STATE},
 						PERMISSION_READ_STATE);
-
-				// MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
-				// app-defined int constant. The callback method gets the
-				// result of the request.
 			}
 		}
 
