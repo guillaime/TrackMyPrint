@@ -78,7 +78,7 @@
         android:background="@color/colorProfileRectangle" />
 
     <TextView
-        android:text="Please check in to a sector"
+        android:text="Please check in to a phase"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/lblScan"
